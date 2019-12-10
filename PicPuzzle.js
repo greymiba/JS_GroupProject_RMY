@@ -1,48 +1,103 @@
 'use strict';
-const canvas1 = document.getElementById('canvas1');
-const ctx1 = canvas1.getContext('2d');
-let rhinoImg = new Image(300,227);
-rhinoImg.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
+let canvas1;
+let ctx1;
+let iWidth;
+let iHeight;
 
-let iWidth = rhinoImg.naturalWidth;
-let iHeight= rhinoImg.naturalHeight;
+let tileDivisor;
+let tileDimArray;
+let ulx;
+let uly;
+let umx;
+let umy;
+let urx;
+let ury;
 
-let tileDivisor = 3;
-let tileDimArray = [Math.floor(iWidth/tileDivisor),Math.floor(iHeight/tileDivisor)];
-canvas1.width = (iWidth);
-canvas1.height = (iHeight);
+let mlx;
+let mly;
+let mmx;
+let mmy;
+let mrx;
+let mry;
 
-let ulx = 0; let uly = 0;
-let umx = tileDimArray[0]; let umy = 0;
-let urx = tileDimArray[0]*2; let ury = 0;
+let llx;
+let lly;
+let lmx;
+let lmy;
+let lrx;
+let lry;
 
-let mlx = 0; let mly = tileDimArray[1];
-let mmx = tileDimArray[0]; let mmy = tileDimArray[1];
-let mrx = tileDimArray[0]*2; let mry = tileDimArray[1];
+let tilePosArray;
 
-let llx = 0; let lly = tileDimArray[1]*2;
-let lmx = tileDimArray[0]; let lmy = tileDimArray[1]*2;
-let lrx = tileDimArray[0]*2; let lry = tileDimArray[1]*2;
+function initialize() {
+	const canvas1 = document.getElementById('canvas1');
+	const ctx1 = canvas1.getContext('2d');
+	let rhinoImg = new Image(300, 227);
+	rhinoImg.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
 
-let tilePosArray = [[ulx,uly],[umx,umy],[urx,ury],[mlx, mly],[mmx,mmy],[mrx,mry],[llx,lly],[lmx,lmy],[lrx,lry]];
+	iWidth = rhinoImg.naturalWidth;
+	iHeight = rhinoImg.naturalHeight;
 
-canvas1.style.border='1px solid red';
+	tileDivisor = 3;
+	tileDimArray = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
+	canvas1.width = iWidth;
+	canvas1.height = iHeight;
+	canvas1.style.border = '1px solid red';
 
 
-rhinoImg.addEventListener('load', e=>{
-  //ctx1.drawImage(rhinoImg,0,0,iWidth,iHeight,0,0,iWidth,iHeight);
-  
-  for(let k = 0; k < tilePosArray.length; k++){
-    ctx1.drawImage(rhinoImg, ...tilePosArray[k], ...tileDimArray,
-                   ...tilePosArray[tilePosArray.length-k-1], 
-                   ...tileDimArray);;
-  }
+ulx = 0;
+uly = 0;
+umx = tileDimArray[0];
+umy = 0;
+urx = tileDimArray[0] * 2;
+ury = 0;
+
+mlx = 0;
+mly = tileDimArray[1];
+mmx = tileDimArray[0];
+mmy = tileDimArray[1];
+mrx = tileDimArray[0] * 2;
+mry = tileDimArray[1];
+
+llx = 0;
+lly = tileDimArray[1] * 2;
+lmx = tileDimArray[0];
+lmy = tileDimArray[1] * 2;
+lrx = tileDimArray[0] * 2;
+lry = tileDimArray[1] * 2;
+
+tilePosArray = [
+	[ ulx, uly ],
+	[ umx, umy ],
+	[ urx, ury ],
+	[ mlx, mly ],
+	[ mmx, mmy ],
+	[ mrx, mry ],
+	[ llx, lly ],
+	[ lmx, lmy ],
+	[ lrx, lry ]
+];
+
+
+rhinoImg.addEventListener('load', (e) => {
+	//ctx1.drawImage(rhinoImg,0,0,iWidth,iHeight,0,0,iWidth,iHeight);
+
+	for (let k = 0; k < tilePosArray.length; k++) {
+		ctx1.drawImage(
+			rhinoImg,
+			...tilePosArray[k],
+			...tileDimArray,
+			...tilePosArray[tilePosArray.length - k - 1],
+			...tileDimArray
+		);
+	}
 });
 
 let pLog = document.getElementById('mouseCoords');
-document.addEventListener('mousemove',logMouse);
+document.addEventListener('mousemove', logMouse);
 
-function logMouse(e){
-  pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
+function logMouse(e) {
+	pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
  [${e.clientX},${e.clientY}]</p><p>Tile Pos Array Length: ${tilePosArray.length}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${rhinoImg.naturalWidth}</p><p>Image Natural height: ${rhinoImg.naturalHeight}</p>`;
+}
 }
