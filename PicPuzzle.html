@@ -6,15 +6,54 @@
     <link rel = "stylesheet" type="text/css" href="PicPuzzle.css">
     <script type ="text/javascript" src="PicPuzzle.js"></script>
   </head>
+  
+  
   <body onload = "initialize()">
-    <canvas id='canvas1'></canvas>
-    <div id="imgOriginal" style="display:flex;">
-      <img id="imgSource" src='https://mdn.mozillademos.org/files/5397/rhino.jpg' width="300" height="227"> 
-    </div>
-    <div id="imgShuffled">
+      <canvas id='canvas1'></canvas>
+      <div id="imgOriginal" style="display:none;">
+        <img id="imgSource" src='https://previews.123rf.com/images/jonnysek/jonnysek1209/jonnysek120900076/15301004-way-in-the-park-as-nice-autumn-background.jpg' width="300" height="227"> 
+        <!-- <img id="imgSource" src='https://mdn.mozillademos.org/files/5397/rhino.jpg' width="300" height="227">  -->
+      </div>
+      <div id="imgShuffled">
+        
+      </div>
+      <div id="mouseDiv" style="top:0px; right:10px; position:absolute;">
+          <p id="mouseCoords">Mouse Coords: </p></div>
 
-    </div>
-    <div id="mouseDiv" style="top:0px; right:10px; position:absolute;">
-      <p id="mouseCoords">Mouse Coords: </p></div>
-  </body>
-</html>
+        <!--added radio bu=ttons for selections -->
+          <form>
+          <fieldset>
+            <legend>Selections:</legend>
+            <div>
+              <input type="radio" id="difficultyChoice1"
+               name="difficulty" value="easy" checked>
+              <label for="difficultyChoice1">Easy</label>
+        
+              <input type="radio" id="difficultyChoice2"
+               name="difficulty" value="medium">
+              <label for="difficultyChoice2">Medium</label>
+        
+              <input type="radio" id="difficultyChoice3"
+               name="difficulty" value="hard">
+              <label for="difficultyChoice3">Hard</label>
+            </div>
+            <div>
+                <input type="radio" id="categoryChoice1"
+                 name="category" value="travel" checked>
+                <label for="categoryChoice1">Travel</label>
+          
+                <input type="radio" id="categoryChoice2"
+                 name="category" value="movies">
+                <label for="categoryChoice2">Movies</label>
+          
+                <input type="radio" id="categoryChoice3"
+                 name="category" value="space">
+                <label for="categoryChoice3">Space</label>
+              </div>
+            <div>
+              <input type="button" onclick="validateButton()">Submit</button>
+            </div>
+          </fieldset>
+        </form>
+    </body>
+    </html>
