@@ -54,6 +54,16 @@ legend {
   background-color: white;
   color: #0d152a;
   padding: 3px 6px;
+  border: solid 1px black;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+}
+
+fieldset {
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
 }
 
 button {
