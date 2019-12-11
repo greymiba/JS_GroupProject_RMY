@@ -3,8 +3,8 @@
 
 <head>
   <title>PicPuzzle</title>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="PicPuzzle.css">
+  <meta charset ="UTF-8">
+  <link rel ="stylesheet" type="text/css" href="PicPuzzle.css">
   <script type="text/javascript" src="PicPuzzle.js"></script>
 </head>
 
@@ -18,18 +18,18 @@
     <h3>How to play:</h3>
     <p>Drag and drop the puzzle pieces to re-assemble the picture before the timer runs out.
       Select the type of puzzle below. Good luck!</p>
-    <form>
+    <form id='form'>
       <fieldset>
         <legend>Selections:</legend>
         <div>
           Difficulty:
-          <input type="radio" id="difficultyChoice1" name="difficulty" value="easy" checked>
+          <input type="radio" id="difficultyChoice1" name="difficulty" value="3" checked>
           <label for="difficultyChoice1">Easy</label>
 
-          <input type="radio" id="difficultyChoice2" name="difficulty" value="medium">
+          <input type="radio" id="difficultyChoice2" name="difficulty" value="4">
           <label for="difficultyChoice2">Medium</label>
 
-          <input type="radio" id="difficultyChoice3" name="difficulty" value="hard">
+          <input type="radio" id="difficultyChoice3" name="difficulty" value="5">
           <label for="difficultyChoice3">Hard</label>
         </div>
         <div>
@@ -44,7 +44,7 @@
           <label for="categoryChoice3">Space</label>
         </div>
         <div>
-          <input type="button" onclick="validateButton()" value="Get Started!">
+          <button type="submit" onclick="validateButton()">Get Started!</button>
         </div>
       </fieldset>
     </form>
