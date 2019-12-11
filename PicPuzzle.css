@@ -6,3 +6,85 @@ body{
 p{
   right:10px;
 }
+
+#introScreen 
+{
+   margin: 50px auto;
+   width: 540px;
+   height: 480px;
+   position: relative;
+   background-color: #0d152a;
+   font-family: 'Oswald', sans-serif;
+   color: white;
+}
+
+#title {
+	font-size: 60px;
+	line-height: 1.5em;
+	font-family: 'Candal', sans-serif;
+}
+
+#introScreen img {
+  float: left;
+  margin-left: 5px;
+	margin-right: 20px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  width: 300px;
+}
+
+#introScreen h3 {
+	clear: both;
+  font-size: 20px;
+  margin-left: 5px;
+}
+
+#introScreen p {
+	clear: both;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#introScreen div {
+	margin-top: 15px;
+	text-align: center;
+}
+
+legend {
+  background-color: white;
+  color: #0d152a;
+  padding: 3px 6px;
+}
+
+button {
+	font-size: 150%;
+	padding: 4px 8px;
+	cursor: pointer;
+	color: green;
+
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+
+	background: -webkit-linear-gradient(top, #a3a3a3, #000);
+	background: -moz-linear-gradient(top, #a3a3a3, #000);
+	background: linear-gradient(top, #a3a3a3, #000);
+
+	-webkit-box-shadow: 0px 5px 8px 3px rgba(255,255,255,0.3);
+	-moz-box-shadow: 0px 5px 8px 3px rgba(255,255,255,0.3);
+	box-shadow: 0px 5px 8px 3px rgba(255,255,255,0.3);
+}
+
+button:hover {
+	background: -webkit-linear-gradient(top, #acc7a3, #506651);
+	background: -moz-linear-gradient(top, #acc7a3, #506651);
+	background: linear-gradient(top, #acc7a3, #506651);	
+}
+
+#puzzle
+{
+  width: 532px;
+  height: 600px;
+  margin: 0px auto;
+  display: none;
+}
