@@ -11,7 +11,7 @@
   <body onload = "initialize()">
       <canvas id='canvas1'></canvas>
       <div id="imgOriginal" style="display:none;">
-        <img id="imgSource" src='https://previews.123rf.com/images/jonnysek/jonnysek1209/jonnysek120900076/15301004-way-in-the-park-as-nice-autumn-background.jpg' width="300" height="227"> 
+        <img id="imgSource" src='https://mdn.mozillademos.org/files/5397/rhino.jpg' width="300" height="227"> 
         <!-- <img id="imgSource" src='https://mdn.mozillademos.org/files/5397/rhino.jpg' width="300" height="227">  -->
       </div>
       <div id="imgShuffled">
@@ -21,20 +21,20 @@
           <p id="mouseCoords">Mouse Coords: </p></div>
 
         <!--added radio bu=ttons for selections -->
-          <form>
+          <form id='form'>
           <fieldset>
             <legend>Selections:</legend>
             <div>
               <input type="radio" id="difficultyChoice1"
-               name="difficulty" value="easy" checked>
+               name="difficulty" value="3" checked>
               <label for="difficultyChoice1">Easy</label>
         
               <input type="radio" id="difficultyChoice2"
-               name="difficulty" value="medium">
+               name="difficulty" value="4">
               <label for="difficultyChoice2">Medium</label>
         
               <input type="radio" id="difficultyChoice3"
-               name="difficulty" value="hard">
+               name="difficulty" value="5">
               <label for="difficultyChoice3">Hard</label>
             </div>
             <div>
@@ -51,7 +51,8 @@
                 <label for="categoryChoice3">Space</label>
               </div>
             <div>
-              <input type="button" onclick="validateButton()">Submit</button>
+              <button  id='submit-btn' type="submit">Submit</button>
+              <!-- <button  id='submit-btn' type="button">Submit</button> -->
             </div>
           </fieldset>
         </form>
