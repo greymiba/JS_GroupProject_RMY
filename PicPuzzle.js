@@ -36,14 +36,14 @@ function initialize() {
   rhinoImg.src = 'https://previews.123rf.com/images/jonnysek/jonnysek1209/jonnysek120900076/15301004-way-in-the-park-as-nice-autumn-background.jpg';
   // rhinoImg.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
 
-  iWidth = rhinoImg.naturalWidth;
-  iHeight = rhinoImg.naturalHeight;
+  iWidth = rhinoImg.width;
+  iHeight = rhinoImg.height;
 
   tileDivisor = 3;
   tileDimArray = [Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor)];
   canvas1.width = iWidth;
   canvas1.height = iHeight;
-  canvas1.style.border = '1px solid red';
+  canvas1.style.border = '1px solid black';
 
 
   ulx = 0;
@@ -104,7 +104,7 @@ function initialize() {
 
 } // end initialize
 
-// determines selections for difficulty and catergory 
+// determines selections for difficulty and category, then displays puzzle
 function validateButton() {
   let difficulties = document.getElementsByName('difficulty');
   let categories = document.getElementsByName('category');
@@ -113,5 +113,7 @@ function validateButton() {
   [...categories].forEach(e => e.checked === true ? category = e.value : null);
   console.log('****', difficulty);
   console.log('****', category);
-
+  // hide the intro screen, show the puzzle screen
+  introScreen.style.display = "none";
+  puzzle.style.display = "block";
 }
