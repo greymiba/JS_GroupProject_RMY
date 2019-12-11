@@ -11,7 +11,7 @@ p{
 {
    margin: 50px auto;
    width: 540px;
-   height: 480px;
+   height: 495px;
    position: relative;
    background-color: #0d152a;
    font-family: 'Oswald', sans-serif;
@@ -47,7 +47,12 @@ p{
 
 #introScreen div {
 	margin-top: 15px;
-	text-align: center;
+  text-align: center;
+}
+
+#form {
+  width: 320px;
+  margin: 0 auto;
 }
 
 legend {
@@ -61,6 +66,7 @@ legend {
 }
 
 fieldset {
+  width: max-content;
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
   border-radius: 8px;
