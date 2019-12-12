@@ -17,6 +17,8 @@ let tileDimArrayScaled; // array of scaled tile dimensions, [ width,  height]
 let tileDimArray0; // array of original tile dimensions, [ width,  height]
 let tilePosArray0 = [];
 
+let boxCurrentlySelected = false;
+
 function initialize() {
 	form = document.getElementById('form');
 	form.addEventListener('submit', validateButton, false);
@@ -36,7 +38,7 @@ function validateButton(e) {
 }
 
 function setImage() {
-	sourceImg = new Image(300*2, 230*2);
+	sourceImg = new Image(300 * 2, 230 * 2);
 	sourceImg.src = assignImage(category);
 	// sourceImg.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
 
@@ -65,7 +67,6 @@ function setCanvas() {
 	oHeight = sourceImg.naturalHeight;
 	iWidth = sourceImg.width;
 	iHeight = sourceImg.height;
-	
 
 	tileDivisor = difficulty;
 	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
@@ -90,8 +91,10 @@ function buildArray() {
 			tilePosArray0[k * difficulty + m] = {
 				x0: m * tileDimArray0[0],
 				y0: k * tileDimArray0[1],
-				xCanvas: m * tileDimArrayScaled[0],
-				yCanvas: k * tileDimArrayScaled[1]
+				xCanvasPosProper: m * tileDimArrayScaled[0],
+				yCanvasPosProper: k * tileDimArrayScaled[1],
+				xCanvasPosPresent: 0,
+				yCanvasPosPresent: 0
 			};
 			//console.log(tilePosArray0[k * difficulty + m]); //**For Debug */
 		}
@@ -106,18 +109,20 @@ function reTileImage(e) {
 			tilePosArray0[k].x0,
 			tilePosArray0[k].y0,
 			...tileDimArray0,
-			tilePosArray0[tempArr[k]].xCanvas,
-			tilePosArray0[tempArr[k]].yCanvas,
-			// tilePosArray0[k].xCanvas,
-			// tilePosArray0[k].yCanvas,
+			tilePosArray0[tempArr[k]].xCanvasPosProper,
+			tilePosArray0[tempArr[k]].yCanvasPosProper,
+			// tilePosArray0[k].xCanvasPosProper,
+			// tilePosArray0[k].yCanvasPosProper,
 			...tileDimArrayScaled
 		);
+		tilePosArray0[k].xCanvasPosPresent = tilePosArray0[tempArr[k]].xCanvasPosProper;
+		tilePosArray0[k].yCanvasPosPresent = tilePosArray0[tempArr[k]].yCanvasPosProper;
 	}
 	// hide the intro screen, show the puzzle screen
 	introScreen.style.display = 'none';
 	puzzle.style.display = 'block';
-	canvas1.addEventListener('mousedown',function(e){
-		getCursorPos(canvas1,e);
+	canvas1.addEventListener('mousedown', function(e) {
+		getCursorPos(e);
 	});
 }
 
@@ -140,11 +145,18 @@ function shuffle(number) {
 	return array.slice(); // return a new array containing values in random order.
 }
 
-function getCursorPos(canvasName, eventA){
-	const rectangle = canvasName.getBoundingClientRect();
+function getCursorPos(eventA) {
+	const rectangle = canvas1.getBoundingClientRect();
 	const x = Math.floor(eventA.clientX - rectangle.left);
 	const y = Math.floor(eventA.clientY - rectangle.top);
-	console.log(`Canvas X: ${x}  Canvas Y: ${y}`)
+	console.log(`Canvas X: ${x}  Canvas Y: ${y}`);
+}
+
+function selectTile(mouseX, mouseY) {
+	if(mouseX>0&&mouseX<iWidth && mouseY >0 && mouseY <iHeight){
+
+
+	}
 }
 
 function debugVals(e) {
