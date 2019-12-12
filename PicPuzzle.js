@@ -17,7 +17,12 @@ let tileDimArrayScaled; // array of scaled tile dimensions, [ width,  height]
 let tileDimArray0; // array of original tile dimensions, [ width,  height]
 let tilePosArray0 = [];
 
-let boxCurrentlySelected = false;
+let tileCurrentlySelected = false;
+let boxTint = '#7dee61';
+
+let gameWon = false;
+let tile1Index;
+let tile2Index;
 
 function initialize() {
 	form = document.getElementById('form');
@@ -150,13 +155,101 @@ function getCursorPos(eventA) {
 	const x = Math.floor(eventA.clientX - rectangle.left);
 	const y = Math.floor(eventA.clientY - rectangle.top);
 	console.log(`Canvas X: ${x}  Canvas Y: ${y}`);
+
+	selectTile(x, y);
 }
 
+// function selectTile(mouseX, mouseY) {
+// 	if (mouseX > 0 && mouseX < iWidth && mouseY > 0 && mouseY < iHeight) {
+
+// 		if(!tileCurrentlySelected){
+// 			markSelectedTile(5); //Arbitrarily highlight tilePosArray0[5]
+// 		}else {
+// 			//console.log(`**For Debug: Else in selectTile triggered!`)
+// 			markSelectedTile(2); //Arbitrarily highlight tilePosArray0[2]
+// 			tileCurrentlySelected=false;
+// 			setTimeout(swapTiles,500,5,2);
+// 			//checkWinCondition()
+
+// 		}
+// 	}
+
+// }
+
+// determines what tile has been selected on the puzzle using coordinates
+
 function selectTile(mouseX, mouseY) {
-	if(mouseX>0&&mouseX<iWidth && mouseY >0 && mouseY <iHeight){
+	if (mouseX >= 0 && mouseX <= iWidth && mouseY >= 0 && mouseY <= iHeight) {
+		let tile;
+		let offsetX = tileDimArrayScaled[0];
+		let offsetY = tileDimArrayScaled[1];
 
-
+		for (let index = 0; index < tilePosArray0.length; index++) {
+			tile = tilePosArray0[index];
+			if (
+				mouseX >= tile.xCanvasPosPresent &&
+				mouseX < tile.xCanvasPosPresent + offsetX &&
+				mouseY >= tile.yCanvasPosPresent &&
+				mouseY < tile.yCanvasPosPresent + offsetY
+			) {
+				if (!tileCurrentlySelected) {
+					tile1Index=index;
+					markSelectedTile(index);
+				} else {
+					tile2Index=index;
+					markSelectedTile(index); //Arbitrarily highlight tilePosArray0[2]
+					setTimeout(swapTiles, 500, tile1Index, tile2Index);
+				}
+			}
+		}
 	}
+}
+
+// function checkWinCondition() {
+// 	for (let h = 0; h < tilePosArray0.length; h++) {
+// 		if (
+// 			tilePosArray0[h].xCanvasPosPresent !== tilePosArray0[h].xCanvasPosProper ||
+// 			tilePosArray0[h].yCanvasPosPresent !== tilePosArray0[h].yCanvasPosProper
+// 		) {
+// 		}
+// 	}
+// }
+
+function swapTiles(piece1Index, piece2Index) {
+	let tempX = tilePosArray0[piece2Index].xCanvasPosPresent;
+	let tempY = tilePosArray0[piece2Index].yCanvasPosPresent;
+	tilePosArray0[piece2Index].xCanvasPosPresent = tilePosArray0[piece1Index].xCanvasPosPresent;
+	tilePosArray0[piece2Index].yCanvasPosPresent = tilePosArray0[piece1Index].yCanvasPosPresent;
+	tilePosArray0[piece1Index].xCanvasPosPresent = tempX;
+	tilePosArray0[piece1Index].yCanvasPosPresent = tempY;
+
+	ctx1.clearRect(0, 0, iWidth, iHeight);
+	for (let k = 0; k < tilePosArray0.length; k++) {
+		ctx1.drawImage(
+			sourceImg,
+			tilePosArray0[k].x0,
+			tilePosArray0[k].y0,
+			...tileDimArray0,
+			tilePosArray0[k].xCanvasPosPresent,
+			tilePosArray0[k].yCanvasPosPresent,
+			// tilePosArray0[k].xCanvasPosProper,
+			// tilePosArray0[k].yCanvasPosProper,
+			...tileDimArrayScaled
+		);
+	}
+}
+
+function markSelectedTile(index) {
+	ctx1.save();
+	ctx1.globalAlpha = 0.4;
+	ctx1.fillStyle = boxTint;
+	ctx1.fillRect(
+		tilePosArray0[index].xCanvasPosPresent,
+		tilePosArray0[index].yCanvasPosPresent,
+		...tileDimArrayScaled
+	);
+	ctx1.restore();
+	tileCurrentlySelected = !tileCurrentlySelected;
 }
 
 function debugVals(e) {
