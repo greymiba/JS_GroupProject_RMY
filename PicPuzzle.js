@@ -28,32 +28,44 @@ function validateButton(e) {
 	difficulty = [ ...difficulties ].filter((p) => p.checked)[0].value;
 	category = [ ...categories ].filter((p) => p.checked)[0].value;
 
-	//***Note:  gameStart() after choices made??
-
 	console.log('****', difficulty);
 	console.log('****', category);
-	//buildArray();
-	//initialize();
+
 	e.preventDefault();
 	setImage();
 }
+
 function setImage() {
-	sourceImg = new Image(600, 454);
-	sourceImg.src =
-		'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.nationaltrust.org.uk%2Fimages%2F1431747858549-stourhead-autumn-nov-2013-2.jpg&f=1&nofb=1';
+	sourceImg = new Image(300*2, 230*2);
+	sourceImg.src = assignImage(category);
 	// sourceImg.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
 
 	sourceImg.addEventListener('load', setCanvas, false);
+}
+
+function assignImage(categoryPick) {
+	switch (categoryPick) {
+		case 'travel':
+			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.nationaltrust.org.uk%2Fimages%2F1431747858549-stourhead-autumn-nov-2013-2.jpg&f=1&nofb=1';
+			break;
+		case 'movies':
+			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.movieweb.com%2Fi%2Farticle%2FOsq3U5y34HTQpCBbV0DlZ3p7CSwyqj%2F1200%3A100%2FAvengers-Endgame-Posters.jpg&f=1&nofb=1';
+			break;
+		case 'space':
+			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fapod.nasa.gov%2Fapod%2Fimage%2F1705%2FArp273Main_HubblePestana_1080.jpg&f=1&nofb=1';
+			break;
+	}
 }
 
 function setCanvas() {
 	canvas1 = document.getElementById('canvas1');
 	ctx1 = canvas1.getContext('2d');
 
-	iWidth = sourceImg.width;
-	iHeight = sourceImg.height;
 	oWidth = sourceImg.naturalWidth;
 	oHeight = sourceImg.naturalHeight;
+	iWidth = sourceImg.width;
+	iHeight = sourceImg.height;
+	
 
 	tileDivisor = difficulty; // ? difficulty : 3;
 	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
@@ -87,23 +99,23 @@ function buildArray() {
 }
 
 function reTileImage(e) {
-  let tempArr = shuffle(tilePosArray0.length);
-  for (let k = 0; k < tilePosArray0.length; k++) {
-    ctx1.drawImage(
-      sourceImg,
-      tilePosArray0[k].x0,
-      tilePosArray0[k].y0,
-      ...tileDimArray0,
-      tilePosArray0[tempArr[k]].xCanvas,
-      tilePosArray0[tempArr[k]].yCanvas,
-      // tilePosArray0[k].xCanvas,
-      // tilePosArray0[k].yCanvas,
-      ...tileDimArrayScaled
-    );
-  }
-  // hide the intro screen, show the puzzle screen
-  introScreen.style.display = 'none';
-  puzzle.style.display = 'block';
+	let tempArr = shuffle(tilePosArray0.length);
+	for (let k = 0; k < tilePosArray0.length; k++) {
+		ctx1.drawImage(
+			sourceImg,
+			tilePosArray0[k].x0,
+			tilePosArray0[k].y0,
+			...tileDimArray0,
+			tilePosArray0[tempArr[k]].xCanvas,
+			tilePosArray0[tempArr[k]].yCanvas,
+			// tilePosArray0[k].xCanvas,
+			// tilePosArray0[k].yCanvas,
+			...tileDimArrayScaled
+		);
+	}
+	// hide the intro screen, show the puzzle screen
+	introScreen.style.display = 'none';
+	puzzle.style.display = 'block';
 }
 
 function shuffle(number) {
@@ -122,9 +134,8 @@ function shuffle(number) {
 		array[currentIndex] = array[randomIndex];
 		array[randomIndex] = temporaryValue;
 	}
-	return array.slice();
+	return array.slice(); // return a new array containing values in random order.
 }
-
 
 function debugVals(e) {
 	let pLog = document.getElementById('mouseCoords');
@@ -135,5 +146,3 @@ function debugVals(e) {
 		.x0} y-${tilePosArray0[0]
 		.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
 }
-
-// determines selections for difficulty and catergory
