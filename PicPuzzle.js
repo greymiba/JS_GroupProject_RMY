@@ -67,7 +67,7 @@ function setCanvas() {
 	iHeight = sourceImg.height;
 	
 
-	tileDivisor = difficulty; // ? difficulty : 3;
+	tileDivisor = difficulty;
 	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
 	tileDimArray0 = [ Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor) ];
 
@@ -77,7 +77,7 @@ function setCanvas() {
 	buildArray();
 	reTileImage();
 
-	document.addEventListener('mousemove', debugVals);
+	//document.addEventListener('mousemove', debugVals);
 }
 
 function buildArray() {
@@ -116,6 +116,9 @@ function reTileImage(e) {
 	// hide the intro screen, show the puzzle screen
 	introScreen.style.display = 'none';
 	puzzle.style.display = 'block';
+	canvas1.addEventListener('mousedown',function(e){
+		getCursorPos(canvas1,e);
+	});
 }
 
 function shuffle(number) {
@@ -135,6 +138,13 @@ function shuffle(number) {
 		array[randomIndex] = temporaryValue;
 	}
 	return array.slice(); // return a new array containing values in random order.
+}
+
+function getCursorPos(canvasName, eventA){
+	const rectangle = canvasName.getBoundingClientRect();
+	const x = Math.floor(eventA.clientX - rectangle.left);
+	const y = Math.floor(eventA.clientY - rectangle.top);
+	console.log(`Canvas X: ${x}  Canvas Y: ${y}`)
 }
 
 function debugVals(e) {
