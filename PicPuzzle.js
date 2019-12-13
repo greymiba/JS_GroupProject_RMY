@@ -21,7 +21,6 @@ let tileCurrentlySelected = false;
 let tileTint = '#7dee61';
 
 let puzzleSolved = false;
-let tilesInOrder = true;
 let tile1Index;
 let tile2Index;
 
