@@ -21,6 +21,7 @@ let tileCurrentlySelected = false;
 let tileTint = '#7dee61';
 
 let puzzleSolved = false;
+let tilesInOrder = true;
 let tile1Index;
 let tile2Index;
 
@@ -157,25 +158,7 @@ function getCursorPos(eventA) {
 	selectTile(x, y);
 }
 
-// function selectTile(mouseX, mouseY) {
-// 	if (mouseX > 0 && mouseX < iWidth && mouseY > 0 && mouseY < iHeight) {
-
-// 		if(!tileCurrentlySelected){
-// 			markSelectedTile(5); //Arbitrarily highlight tilePosArray0[5]
-// 		}else {
-// 			//console.log(`**For Debug: Else in selectTile triggered!`)
-// 			markSelectedTile(2); //Arbitrarily highlight tilePosArray0[2]
-// 			tileCurrentlySelected=false;
-// 			setTimeout(swapTiles,500,5,2);
-// 			//checkWinCondition()
-
-// 		}
-// 	}
-
-// }
-
 // determines what tile has been selected on the puzzle using coordinates
-
 function selectTile(mouseX, mouseY) {
 	if (mouseX >= 0 && mouseX <= iWidth && mouseY >= 0 && mouseY <= iHeight) {
 		let tile;
@@ -203,39 +186,17 @@ function selectTile(mouseX, mouseY) {
 	}
 }
 
-// loops over all objects in tilePosArray0 to get proper and present X and Y values and stores them in arrays
-// compare arrays of X,Y values to see if all positions are equal. If so, puzzle has been solved.
+// loops over tilePosArray0 to compare x / y values for proper and present position in current object
+// if not equal, keep playing. If entire array has been checked and all items are equal, then puzzle has been solved.
 function checkWinCondition() {
-	let xPresent = [], yPresent = [], xProper = [], yProper = [];
-	let xAllEqual, yAllEqual;
-
 	for (let i = 0; i < tilePosArray0.length; i++) {
-		for (const property in tilePosArray0[i]) {
-			if (property === 'xCanvasPosProper') {     // ??? can filter be used here?
-				xProper.push(tilePosArray0[i][property]);
-			}
-			if (property === 'yCanvasPosProper') {
-				yProper.push(tilePosArray0[i][property]);
-			}
-			if (property === 'xCanvasPosPresent') {
-				xPresent.push(tilePosArray0[i][property]);
-			}
-			if (property === 'yCanvasPosPresent') {
-				yPresent.push(tilePosArray0[i][property]);
-			}
+		if (tilePosArray0[i]['xCanvasPosProper'] !== tilePosArray0[i]['xCanvasPosPresent'] ||
+			tilePosArray0[i]['yCanvasPosProper'] !== tilePosArray0[i]['yCanvasPosPresent']) {
+			return;
 		}
 	}
-	console.log(`xProper: ${xProper} -- xPresent: ${xPresent}`);
-	console.log(`yProper: ${yProper} -- yPresent: ${yPresent}`);
-
-	xAllEqual = xProper.every((el, idx) => el === xPresent[idx]);
-	yAllEqual = yProper.every((el, idx) => el === yPresent[idx]);
-
-	if (xAllEqual && yAllEqual) {
-		console.log("won");
-		puzzleSolved = true;  // ??? is this needed
-		canvas1.removeEventListener('mousedown', getCursorPos);
-	}
+	puzzleSolved = true;
+	canvas1.removeEventListener('mousedown', getCursorPos);
 }
 
 function swapTiles(piece1Index, piece2Index) {
