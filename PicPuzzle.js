@@ -196,10 +196,13 @@ function checkWinCondition() {
 	displayEndScreen();  // puzzle solved
 }
 
+// turn off eventListener and display congrats across canvas
 function displayEndScreen() {
 	canvas1.removeEventListener('mousedown', getCursorPos);
 	puzzleSolved = true;
-	
+	ctx1.font = '64px Arial';
+	ctx1.fillStyle = 'White';
+	ctx1.fillText('Congratulations!', 80, 230);
 }
 
 function swapTiles(piece1Index, piece2Index) {
