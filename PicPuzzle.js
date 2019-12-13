@@ -18,9 +18,9 @@ let tileDimArray0; // array of original tile dimensions, [ width,  height]
 let tilePosArray0 = [];
 
 let tileCurrentlySelected = false;
-let boxTint = '#7dee61';
+let tileTint = '#7dee61';
 
-let gameWon = false;
+let puzzleSolved = false;
 let tile1Index;
 let tile2Index;
 
@@ -32,11 +32,11 @@ function initialize() {
 function validateButton(e) {
 	let difficulties = document.getElementsByName('difficulty');
 	let categories = document.getElementsByName('category');
-	difficulty = [ ...difficulties ].filter((p) => p.checked)[0].value;
-	category = [ ...categories ].filter((p) => p.checked)[0].value;
+	difficulty = [...difficulties].filter((p) => p.checked)[0].value;
+	category = [...categories].filter((p) => p.checked)[0].value;
 
-	console.log('****', difficulty);
-	console.log('****', category);
+	// console.log('****', difficulty);
+	// console.log('****', category);
 
 	e.preventDefault();
 	setImage();
@@ -74,8 +74,8 @@ function setCanvas() {
 	iHeight = sourceImg.height;
 
 	tileDivisor = difficulty;
-	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
-	tileDimArray0 = [ Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor) ];
+	tileDimArrayScaled = [Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor)];
+	tileDimArray0 = [Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor)];
 
 	canvas1.width = iWidth;
 	canvas1.height = iHeight;
@@ -126,9 +126,7 @@ function reTileImage(e) {
 	// hide the intro screen, show the puzzle screen
 	introScreen.style.display = 'none';
 	puzzle.style.display = 'block';
-	canvas1.addEventListener('mousedown', function(e) {
-		getCursorPos(e);
-	});
+	canvas1.addEventListener('mousedown', getCursorPos);
 }
 
 function shuffle(number) {
@@ -154,7 +152,7 @@ function getCursorPos(eventA) {
 	const rectangle = canvas1.getBoundingClientRect();
 	const x = Math.floor(eventA.clientX - rectangle.left);
 	const y = Math.floor(eventA.clientY - rectangle.top);
-	console.log(`Canvas X: ${x}  Canvas Y: ${y}`);
+	// console.log(`Canvas X: ${x}  Canvas Y: ${y}`);
 
 	selectTile(x, y);
 }
@@ -193,10 +191,10 @@ function selectTile(mouseX, mouseY) {
 				mouseY < tile.yCanvasPosPresent + offsetY
 			) {
 				if (!tileCurrentlySelected) {
-					tile1Index=index;
+					tile1Index = index;
 					markSelectedTile(index);
 				} else {
-					tile2Index=index;
+					tile2Index = index;
 					markSelectedTile(index); //Arbitrarily highlight tilePosArray0[2]
 					setTimeout(swapTiles, 500, tile1Index, tile2Index);
 				}
@@ -205,15 +203,40 @@ function selectTile(mouseX, mouseY) {
 	}
 }
 
-// function checkWinCondition() {
-// 	for (let h = 0; h < tilePosArray0.length; h++) {
-// 		if (
-// 			tilePosArray0[h].xCanvasPosPresent !== tilePosArray0[h].xCanvasPosProper ||
-// 			tilePosArray0[h].yCanvasPosPresent !== tilePosArray0[h].yCanvasPosProper
-// 		) {
-// 		}
-// 	}
-// }
+// loops over all objects in tilePosArray0 to get proper and present X and Y values and stores them in arrays
+// compare arrays of X,Y values to see if all positions are equal. If so, puzzle has been solved.
+function checkWinCondition() {
+	let xPresent = [], yPresent = [], xProper = [], yProper = [];
+	let xAllEqual, yAllEqual;
+
+	for (let i = 0; i < tilePosArray0.length; i++) {
+		for (const property in tilePosArray0[i]) {
+			if (property === 'xCanvasPosProper') {     // ??? can filter be used here?
+				xProper.push(tilePosArray0[i][property]);
+			}
+			if (property === 'yCanvasPosProper') {
+				yProper.push(tilePosArray0[i][property]);
+			}
+			if (property === 'xCanvasPosPresent') {
+				xPresent.push(tilePosArray0[i][property]);
+			}
+			if (property === 'yCanvasPosPresent') {
+				yPresent.push(tilePosArray0[i][property]);
+			}
+		}
+	}
+	console.log(`xProper: ${xProper} -- xPresent: ${xPresent}`);
+	console.log(`yProper: ${yProper} -- yPresent: ${yPresent}`);
+
+	xAllEqual = xProper.every((el, idx) => el === xPresent[idx]);
+	yAllEqual = yProper.every((el, idx) => el === yPresent[idx]);
+
+	if (xAllEqual && yAllEqual) {
+		console.log("won");
+		puzzleSolved = true;  // ??? is this needed
+		canvas1.removeEventListener('mousedown', getCursorPos);
+	}
+}
 
 function swapTiles(piece1Index, piece2Index) {
 	let tempX = tilePosArray0[piece2Index].xCanvasPosPresent;
@@ -237,12 +260,13 @@ function swapTiles(piece1Index, piece2Index) {
 			...tileDimArrayScaled
 		);
 	}
+	checkWinCondition();
 }
 
 function markSelectedTile(index) {
 	ctx1.save();
 	ctx1.globalAlpha = 0.4;
-	ctx1.fillStyle = boxTint;
+	ctx1.fillStyle = tileTint;
 	ctx1.fillRect(
 		tilePosArray0[index].xCanvasPosPresent,
 		tilePosArray0[index].yCanvasPosPresent,
@@ -258,6 +282,6 @@ function debugVals(e) {
 
 	pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
       [${e.clientX},${e.clientY}]</p><p>Tile Pos Array2 Length: ${tilePosArray0.length}</p><p>Tile Dim2: x-${tileDimArrayScaled[0]} y-${tileDimArrayScaled[1]}</p><p>Tile Pos Arr ulCoord: x-${tilePosArray0[0]
-		.x0} y-${tilePosArray0[0]
-		.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
+			.x0} y-${tilePosArray0[0]
+				.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
 }
