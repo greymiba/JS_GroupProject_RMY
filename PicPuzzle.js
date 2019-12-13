@@ -1,4 +1,6 @@
 'use strict';
+
+//// ???? changes to make:  add comments for each function, remove unused variables and pieces of code, set up initialize() to reset variables and display intro screen
 let form;
 
 let difficulty, category; //difficulty & category variables hold the user-selected puzzle difficulty and picture category.
@@ -34,9 +36,6 @@ function validateButton(e) {
 	let categories = document.getElementsByName('category');
 	difficulty = [...difficulties].filter((p) => p.checked)[0].value;
 	category = [...categories].filter((p) => p.checked)[0].value;
-
-	// console.log('****', difficulty);
-	// console.log('****', category);
 
 	e.preventDefault();
 	setImage();
@@ -194,8 +193,13 @@ function checkWinCondition() {
 			return;
 		}
 	}
-	puzzleSolved = true;
+	displayEndScreen();  // puzzle solved
+}
+
+function displayEndScreen() {
 	canvas1.removeEventListener('mousedown', getCursorPos);
+	puzzleSolved = true;
+	
 }
 
 function swapTiles(piece1Index, piece2Index) {
