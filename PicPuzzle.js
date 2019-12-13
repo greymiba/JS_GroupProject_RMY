@@ -20,7 +20,7 @@ let tilePosArray0 = [];
 let tileCurrentlySelected = false;
 let tileTint = '#7dee61';
 
-let puzzleWon = false;
+let puzzleSolved = false;
 let tile1Index;
 let tile2Index;
 
@@ -126,9 +126,7 @@ function reTileImage(e) {
 	// hide the intro screen, show the puzzle screen
 	introScreen.style.display = 'none';
 	puzzle.style.display = 'block';
-	canvas1.addEventListener('mousedown', function (e) {
-		getCursorPos(e);
-	});
+	canvas1.addEventListener('mousedown', getCursorPos);
 }
 
 function shuffle(number) {
@@ -235,8 +233,8 @@ function checkWinCondition() {
 
 	if (xAllEqual && yAllEqual) {
 		console.log("won");
-		puzzleWon = true;  // ??? is this needed
-		canvas1.removeEventListener('mousedown', getCursorPos(e));   //// ???? turn off event listener
+		puzzleSolved = true;  // ??? is this needed
+		canvas1.removeEventListener('mousedown', getCursorPos);
 	}
 }
 
