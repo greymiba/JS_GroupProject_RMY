@@ -1,6 +1,6 @@
 'use strict';
 
-//// ???? changes to make:  add comments for each function, remove unused variables and pieces of code, set up initialize() to reset variables and display intro screen
+//// ???? changes to make:  add comments for each function, remove unused pieces of code, show picture briefly to user
 let form;
 
 let difficulty, category; //difficulty & category variables hold the user-selected puzzle difficulty and picture category.
@@ -19,18 +19,20 @@ let tileDimArrayScaled; // array of scaled tile dimensions, [ width,  height]
 let tileDimArray0; // array of original tile dimensions, [ width,  height]
 let tilePosArray0 = [];
 
-let tileCurrentlySelected = false;
+let tileCurrentlySelected;
 let tileTint = '#7dee61';
 
-let puzzleSolved = false;
 let tile1Index;
 let tile2Index;
 
+// initialize items on page load
 function initialize() {
 	form = document.getElementById('form');
 	form.addEventListener('submit', validateButton, false);
+	tileCurrentlySelected = false;
 }
 
+// determine selections for difficulty and category, then get an image
 function validateButton(e) {
 	let difficulties = document.getElementsByName('difficulty');
 	let categories = document.getElementsByName('category');
@@ -41,14 +43,14 @@ function validateButton(e) {
 	setImage();
 }
 
+// set size of image and populat source
 function setImage() {
 	sourceImg = new Image(300 * 2, 230 * 2);
 	sourceImg.src = assignImage(category);
-	// sourceImg.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
-
 	sourceImg.addEventListener('load', setCanvas, false);
 }
 
+// assign an image based on the user category selection
 function assignImage(categoryPick) {
 	switch (categoryPick) {
 		case 'travel':
@@ -63,6 +65,7 @@ function assignImage(categoryPick) {
 	}
 }
 
+// define canvas dimensions, use image width/height to determine scale
 function setCanvas() {
 	canvas1 = document.getElementById('canvas1');
 	ctx1 = canvas1.getContext('2d');
@@ -85,6 +88,7 @@ function setCanvas() {
 	//document.addEventListener('mousemove', debugVals);
 }
 
+// populate array with x/y coordinates for each image slice. each object holds original, scaled, and shuffled coordinates 
 function buildArray() {
 	tilePosArray0 = [];
 
@@ -105,6 +109,7 @@ function buildArray() {
 	}
 }
 
+// slice the image, scale it to size and draw. Update coordinates of slice as placed and show puzzle
 function reTileImage(e) {
 	let tempArr = shuffle(tilePosArray0.length);
 	for (let k = 0; k < tilePosArray0.length; k++) {
@@ -125,9 +130,11 @@ function reTileImage(e) {
 	// hide the intro screen, show the puzzle screen
 	introScreen.style.display = 'none';
 	puzzle.style.display = 'block';
+	countDown(30);
 	canvas1.addEventListener('mousedown', getCursorPos);
 }
 
+// returns array of shuffled indexes for the size of the puzzle
 function shuffle(number) {
 	let array = [];
 	for (let i = 0; i < number; i++) {
@@ -147,6 +154,7 @@ function shuffle(number) {
 	return array.slice(); // return a new array containing values in random order.
 }
 
+// determines x/y coordinates of mouse in the canvas, based on location when clicked
 function getCursorPos(eventA) {
 	const rectangle = canvas1.getBoundingClientRect();
 	const x = Math.floor(eventA.clientX - rectangle.left);
@@ -184,27 +192,7 @@ function selectTile(mouseX, mouseY) {
 	}
 }
 
-// loops over tilePosArray0 to compare x / y values for proper and present position in current object
-// if not equal, keep playing. If entire array has been checked and all items are equal, then puzzle has been solved.
-function checkWinCondition() {
-	for (let i = 0; i < tilePosArray0.length; i++) {
-		if (tilePosArray0[i]['xCanvasPosProper'] !== tilePosArray0[i]['xCanvasPosPresent'] ||
-			tilePosArray0[i]['yCanvasPosProper'] !== tilePosArray0[i]['yCanvasPosPresent']) {
-			return;
-		}
-	}
-	displayEndScreen();  // puzzle solved
-}
-
-// turn off eventListener and display congrats across canvas
-function displayEndScreen() {
-	canvas1.removeEventListener('mousedown', getCursorPos);
-	puzzleSolved = true;
-	ctx1.font = '64px Arial';
-	ctx1.fillStyle = 'White';
-	ctx1.fillText('Congratulations!', 80, 230);
-}
-
+// when two tiles are selected, switch positions and check for win
 function swapTiles(piece1Index, piece2Index) {
 	let tempX = tilePosArray0[piece2Index].xCanvasPosPresent;
 	let tempY = tilePosArray0[piece2Index].yCanvasPosPresent;
@@ -230,6 +218,7 @@ function swapTiles(piece1Index, piece2Index) {
 	checkWinCondition();
 }
 
+// highlight tiles selected for swap
 function markSelectedTile(index) {
 	ctx1.save();
 	ctx1.globalAlpha = 0.4;
@@ -243,12 +232,50 @@ function markSelectedTile(index) {
 	tileCurrentlySelected = !tileCurrentlySelected;
 }
 
+// loops over tilePosArray0 to compare x / y values for proper and present position in current object
+// if not equal, keep playing. If entire array has been checked and all items are equal, then puzzle has been solved.
+function checkWinCondition() {
+	for (let i = 0; i < tilePosArray0.length; i++) {
+		if (tilePosArray0[i]['xCanvasPosProper'] !== tilePosArray0[i]['xCanvasPosPresent'] ||
+			tilePosArray0[i]['yCanvasPosProper'] !== tilePosArray0[i]['yCanvasPosPresent']) {
+			return;
+		}
+	}
+	displayEndScreen();  // puzzle solved
+}
+
+// turn off eventListener, display congrats and return to intro screen
+function displayEndScreen() {
+	canvas1.removeEventListener('mousedown', getCursorPos);
+	ctx1.font = '64px Arial';
+	ctx1.fillStyle = 'White';
+	ctx1.fillText('Congratulations!', 80, 230);
+	// setTimeout(function () {
+	// 	initialize;
+	// 	introScreen.style.display = 'block';
+	// 	puzzle.style.display = 'none';
+	// }, 10000);
+}
+
+// displays timer to user
+function countDown(seconds){   // ?? turn off if solved before time is up
+	let element, timer;
+	element = document.getElementById("timeDisplay");
+	element.innerHTML = `Time Left: ${seconds} seconds`;
+	if (seconds < 1) {
+		clearTimeout(timer);
+		element.innerHTML = '<h2>Time\'s Up!</h2>'
+	}
+	seconds--;
+	timer = setTimeout(`countDown(${seconds})`, 1000);
+}
+
 function debugVals(e) {
 	let pLog = document.getElementById('mouseCoords');
 	pLog.style.fontSize = '10px';
 
 	pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
-      [${e.clientX},${e.clientY}]</p><p>Tile Pos Array2 Length: ${tilePosArray0.length}</p><p>Tile Dim2: x-${tileDimArrayScaled[0]} y-${tileDimArrayScaled[1]}</p><p>Tile Pos Arr ulCoord: x-${tilePosArray0[0]
+	[${e.clientX},${e.clientY}]</p><p>Tile Pos Array2 Length: ${tilePosArray0.length}</p><p>Tile Dim2: x-${tileDimArrayScaled[0]} y-${tileDimArrayScaled[1]}</p><p>Tile Pos Arr ulCoord: x-${tilePosArray0[0]
 			.x0} y-${tilePosArray0[0]
 				.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
 }
