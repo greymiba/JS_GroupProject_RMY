@@ -1,4 +1,5 @@
 'use strict';
+import NasaInfo from './NasaInfo.js';
 
 //// ???? changes to make:  add comments for each function, remove unused pieces of code, show picture briefly to user
 let form;
@@ -25,6 +26,14 @@ let tileTint = '#7dee61';
 let tile1Index;
 let tile2Index;
 
+//Variable for space category.
+let nasaImgUrl;
+let nasaImgExplanation;
+let nasaImgDate;
+
+let body = document.querySelector('body');
+body.onload = initialize;
+
 // initialize items on page load
 function initialize() {
 	form = document.getElementById('form');
@@ -36,22 +45,28 @@ function initialize() {
 function validateButton(e) {
 	let difficulties = document.getElementsByName('difficulty');
 	let categories = document.getElementsByName('category');
-	difficulty = [...difficulties].filter((p) => p.checked)[0].value;
-	category = [...categories].filter((p) => p.checked)[0].value;
+	difficulty = [ ...difficulties ].filter((p) => p.checked)[0].value;
+	category = [ ...categories ].filter((p) => p.checked)[0].value;
 
 	e.preventDefault();
 	setImage();
 }
 
-// set size of image and populat source
-function setImage() {
+// set size of image and populat source. Async req'd to wait for image retrieval.
+async function setImage() {
 	sourceImg = new Image(300 * 2, 230 * 2);
-	sourceImg.src = assignImage(category);
+	sourceImg.src = await assignImage(category);
 	sourceImg.addEventListener('load', setCanvas, false);
 }
 
-// assign an image based on the user category selection
-function assignImage(categoryPick) {
+async function getNasaImg() {
+	let nasaObj = new NasaInfo();
+	let nasaImgInfo = await nasaObj.getNasaImage();
+	return nasaImgInfo;
+}
+
+// assign an image based on the user category selection. Async req'd to wait for image retrieval.
+async function assignImage(categoryPick) {
 	switch (categoryPick) {
 		case 'travel':
 			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.nationaltrust.org.uk%2Fimages%2F1431747858549-stourhead-autumn-nov-2013-2.jpg&f=1&nofb=1';
@@ -59,8 +74,16 @@ function assignImage(categoryPick) {
 		case 'movies':
 			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.movieweb.com%2Fi%2Farticle%2FOsq3U5y34HTQpCBbV0DlZ3p7CSwyqj%2F1200%3A100%2FAvengers-Endgame-Posters.jpg&f=1&nofb=1';
 			break;
+		// case 'space':
+		// 	return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fapod.nasa.gov%2Fapod%2Fimage%2F1705%2FArp273Main_HubblePestana_1080.jpg&f=1&nofb=1';
+		// 	break;
 		case 'space':
-			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fapod.nasa.gov%2Fapod%2Fimage%2F1705%2FArp273Main_HubblePestana_1080.jpg&f=1&nofb=1';
+			let temp = await getNasaImg();
+			nasaImgUrl = temp[0];
+			nasaImgDate = temp[1];
+			nasaImgExplanation = temp[2];
+			console.log(nasaImgUrl);
+			return nasaImgUrl;
 			break;
 	}
 }
@@ -76,8 +99,8 @@ function setCanvas() {
 	iHeight = sourceImg.height;
 
 	tileDivisor = difficulty;
-	tileDimArrayScaled = [Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor)];
-	tileDimArray0 = [Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor)];
+	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
+	tileDimArray0 = [ Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor) ];
 
 	canvas1.width = iWidth;
 	canvas1.height = iHeight;
@@ -88,7 +111,7 @@ function setCanvas() {
 	//document.addEventListener('mousemove', debugVals);
 }
 
-// populate array with x/y coordinates for each image slice. each object holds original, scaled, and shuffled coordinates 
+// populate array with x/y coordinates for each image slice. each object holds original, scaled, and shuffled coordinates
 function buildArray() {
 	tilePosArray0 = [];
 
@@ -130,6 +153,7 @@ function reTileImage(e) {
 	// hide the intro screen, show the puzzle screen
 	introScreen.style.display = 'none';
 	puzzle.style.display = 'block';
+	//console.log(countDown)
 	countDown(30);
 	canvas1.addEventListener('mousedown', getCursorPos);
 }
@@ -185,7 +209,7 @@ function selectTile(mouseX, mouseY) {
 				} else {
 					tile2Index = index;
 					markSelectedTile(index); //Arbitrarily highlight tilePosArray0[2]
-					setTimeout(swapTiles, 500, tile1Index, tile2Index);
+					setTimeout(swapTiles, 500);
 				}
 			}
 		}
@@ -193,13 +217,13 @@ function selectTile(mouseX, mouseY) {
 }
 
 // when two tiles are selected, switch positions and check for win
-function swapTiles(piece1Index, piece2Index) {
-	let tempX = tilePosArray0[piece2Index].xCanvasPosPresent;
-	let tempY = tilePosArray0[piece2Index].yCanvasPosPresent;
-	tilePosArray0[piece2Index].xCanvasPosPresent = tilePosArray0[piece1Index].xCanvasPosPresent;
-	tilePosArray0[piece2Index].yCanvasPosPresent = tilePosArray0[piece1Index].yCanvasPosPresent;
-	tilePosArray0[piece1Index].xCanvasPosPresent = tempX;
-	tilePosArray0[piece1Index].yCanvasPosPresent = tempY;
+function swapTiles() {
+	let tempX = tilePosArray0[tile2Index].xCanvasPosPresent;
+	let tempY = tilePosArray0[tile2Index].yCanvasPosPresent;
+	tilePosArray0[tile2Index].xCanvasPosPresent = tilePosArray0[tile1Index].xCanvasPosPresent;
+	tilePosArray0[tile2Index].yCanvasPosPresent = tilePosArray0[tile1Index].yCanvasPosPresent;
+	tilePosArray0[tile1Index].xCanvasPosPresent = tempX;
+	tilePosArray0[tile1Index].yCanvasPosPresent = tempY;
 
 	ctx1.clearRect(0, 0, iWidth, iHeight);
 	for (let k = 0; k < tilePosArray0.length; k++) {
@@ -236,12 +260,14 @@ function markSelectedTile(index) {
 // if not equal, keep playing. If entire array has been checked and all items are equal, then puzzle has been solved.
 function checkWinCondition() {
 	for (let i = 0; i < tilePosArray0.length; i++) {
-		if (tilePosArray0[i]['xCanvasPosProper'] !== tilePosArray0[i]['xCanvasPosPresent'] ||
-			tilePosArray0[i]['yCanvasPosProper'] !== tilePosArray0[i]['yCanvasPosPresent']) {
+		if (
+			tilePosArray0[i]['xCanvasPosProper'] !== tilePosArray0[i]['xCanvasPosPresent'] ||
+			tilePosArray0[i]['yCanvasPosProper'] !== tilePosArray0[i]['yCanvasPosPresent']
+		) {
 			return;
 		}
 	}
-	displayEndScreen();  // puzzle solved
+	displayEndScreen(); // puzzle solved
 }
 
 // turn off eventListener, display congrats and return to intro screen
@@ -258,16 +284,17 @@ function displayEndScreen() {
 }
 
 // displays timer to user
-function countDown(seconds){   // ?? turn off if solved before time is up
+function countDown(seconds) {
+	// ?? turn off if solved before time is up
 	let element, timer;
-	element = document.getElementById("timeDisplay");
+	element = document.getElementById('timeDisplay');
 	element.innerHTML = `Time Left: ${seconds} seconds`;
 	if (seconds < 1) {
 		clearTimeout(timer);
-		element.innerHTML = '<h2>Time\'s Up!</h2>'
+		element.innerHTML = "<h2>Time's Up!</h2>";
 	}
 	seconds--;
-	timer = setTimeout(`countDown(${seconds})`, 1000);
+	timer = setTimeout(countDown, 1000, seconds);
 }
 
 function debugVals(e) {
@@ -276,6 +303,6 @@ function debugVals(e) {
 
 	pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
 	[${e.clientX},${e.clientY}]</p><p>Tile Pos Array2 Length: ${tilePosArray0.length}</p><p>Tile Dim2: x-${tileDimArrayScaled[0]} y-${tileDimArrayScaled[1]}</p><p>Tile Pos Arr ulCoord: x-${tilePosArray0[0]
-			.x0} y-${tilePosArray0[0]
-				.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
+		.x0} y-${tilePosArray0[0]
+		.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
 }
