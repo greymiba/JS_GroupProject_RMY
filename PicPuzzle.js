@@ -1,8 +1,9 @@
 'use strict';
 import NasaInfo from './NasaInfo.js';
 
-//// ???? changes to make:  add comments for each function, remove unused pieces of code, show picture briefly to user
+//// ???? changes to make:  show picture briefly to user
 let form;
+let puzzleSolved;
 
 let difficulty, category; //difficulty & category variables hold the user-selected puzzle difficulty and picture category.
 
@@ -149,8 +150,6 @@ function reTileImage(e) {
 			...tileDimArray0,
 			tilePosArray0[tempArr[k]].xCanvasPosProper,
 			tilePosArray0[tempArr[k]].yCanvasPosProper,
-			// tilePosArray0[k].xCanvasPosProper,
-			// tilePosArray0[k].yCanvasPosProper,
 			...tileDimArrayScaled
 		);
 		tilePosArray0[k].xCanvasPosPresent = tilePosArray0[tempArr[k]].xCanvasPosProper;
@@ -300,7 +299,8 @@ function checkWinCondition() {
 			return;
 		}
 	}
-	displayEndScreen(); // puzzle solved
+	puzzleSolved = true;
+	displayEndScreen();
 }
 
 // turn off eventListener, display congrats and return to intro screen
@@ -309,25 +309,26 @@ function displayEndScreen() {
 	ctx1.font = '64px Arial';
 	ctx1.fillStyle = 'White';
 	ctx1.fillText('Congratulations!', 80, 230);
-	// setTimeout(function () {
-	// 	initialize;
-	// 	introScreen.style.display = 'block';
-	// 	puzzle.style.display = 'none';
-	// }, 10000);
 }
 
 // displays timer to user
 function countDown(seconds) {
 	// ?? turn off if solved before time is up
-	let element, timer;
-	element = document.getElementById('timeDisplay');
-	element.innerHTML = `Time Left: ${seconds} seconds`;
-	if (seconds < 1) {
-		clearTimeout(timer);
-		element.innerHTML = "<h2>Time's Up!</h2>";
+	if (!puzzleSolved) {
+		let element, timer;
+		element = document.getElementById('timeDisplay');
+		element.innerHTML = `Time Left: ${seconds} seconds`;
+		if (seconds < 1) {
+			clearTimeout(timer);
+			element.innerHTML = "<h2>Time's Up!</h2>";
+			canvas1.removeEventListener('mousedown', getCursorPos);
+			ctx1.font = '120px Arial';
+			ctx1.fillStyle = 'Red';
+			ctx1.fillText('You Lose!', 90, 230);
+		}
+		seconds--;
+		timer = setTimeout(countDown, 1000, seconds);
 	}
-	seconds--;
-	timer = setTimeout(countDown, 1000, seconds);
 }
 
 function debugVals(e) {
