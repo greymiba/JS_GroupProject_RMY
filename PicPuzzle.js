@@ -26,6 +26,10 @@ let tileTint = '#7dee61';
 let tile1Index;
 let tile2Index;
 
+// variables for scoring
+let swapCount;
+let score;
+
 //Variable for space category.
 let nasaImgUrl;
 let nasaImgExplanation;
@@ -39,14 +43,16 @@ function initialize() {
 	form = document.getElementById('form');
 	form.addEventListener('submit', validateButton, false);
 	tileCurrentlySelected = false;
+	swapCount = 0;
+	score = 0;
 }
 
 // determine selections for difficulty and category, then get an image
 function validateButton(e) {
 	let difficulties = document.getElementsByName('difficulty');
 	let categories = document.getElementsByName('category');
-	difficulty = [ ...difficulties ].filter((p) => p.checked)[0].value;
-	category = [ ...categories ].filter((p) => p.checked)[0].value;
+	difficulty = [...difficulties].filter((p) => p.checked)[0].value;
+	category = [...categories].filter((p) => p.checked)[0].value;
 
 	e.preventDefault();
 	setImage();
@@ -99,8 +105,8 @@ function setCanvas() {
 	iHeight = sourceImg.height;
 
 	tileDivisor = difficulty;
-	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
-	tileDimArray0 = [ Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor) ];
+	tileDimArrayScaled = [Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor)];
+	tileDimArray0 = [Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor)];
 
 	canvas1.width = iWidth;
 	canvas1.height = iHeight;
@@ -153,8 +159,9 @@ function reTileImage(e) {
 	// hide the intro screen, show the puzzle screen
 	introScreen.style.display = 'none';
 	puzzle.style.display = 'block';
-	//console.log(countDown)
-	countDown(30);
+	let difficultyAsNumber = Number(difficulty);
+	let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
+	countDown(seconds);
 	canvas1.addEventListener('mousedown', getCursorPos);
 }
 
@@ -210,13 +217,38 @@ function selectTile(mouseX, mouseY) {
 					tile2Index = index;
 					markSelectedTile(index); //Arbitrarily highlight tilePosArray0[2]
 					setTimeout(swapTiles, 500);
+					swapCount++;
 				}
 			}
 		}
 	}
 }
 
-// when two tiles are selected, switch positions and check for win
+// check if swapped tile went to proper position
+function checkProperPostion() {
+	let tileX1 = tilePosArray0[tile1Index].xCanvasPosPresent === tilePosArray0[tile1Index].xCanvasPosProper;
+	let tileY1 = tilePosArray0[tile1Index].yCanvasPosPresent === tilePosArray0[tile1Index].yCanvasPosProper;
+	let tileX2 = tilePosArray0[tile2Index].xCanvasPosPresent === tilePosArray0[tile2Index].xCanvasPosProper;
+	let tileY2 = tilePosArray0[tile2Index].yCanvasPosPresent === tilePosArray0[tile2Index].yCanvasPosProper;
+
+	if (tileX1 && tileY1 || tileX2 && tileY2) {
+		countScore();
+	}
+}
+
+// updates score based on number of moves made
+function countScore() {
+	let multiplier = swapCount - difficulty * 2;
+	if (multiplier <= 0) {
+		score += 5;
+	}
+	else {
+		score -= 10;
+	}
+	let element = document.getElementById("score");
+	element.innerHTML = score;
+}
+// when two tiles are selected, switch positions, update score, and check for win
 function swapTiles() {
 	let tempX = tilePosArray0[tile2Index].xCanvasPosPresent;
 	let tempY = tilePosArray0[tile2Index].yCanvasPosPresent;
@@ -239,6 +271,7 @@ function swapTiles() {
 			...tileDimArrayScaled
 		);
 	}
+	checkProperPostion();
 	checkWinCondition();
 }
 
@@ -303,6 +336,6 @@ function debugVals(e) {
 
 	pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
 	[${e.clientX},${e.clientY}]</p><p>Tile Pos Array2 Length: ${tilePosArray0.length}</p><p>Tile Dim2: x-${tileDimArrayScaled[0]} y-${tileDimArrayScaled[1]}</p><p>Tile Pos Arr ulCoord: x-${tilePosArray0[0]
-		.x0} y-${tilePosArray0[0]
-		.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
+			.x0} y-${tilePosArray0[0]
+				.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
 }
