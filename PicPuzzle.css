@@ -2,7 +2,9 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
+  background-image: url("blankPuzzle.jpg");
 }
+
 p{
   right:10px;
 }
@@ -10,8 +12,8 @@ p{
 #introScreen 
 {
    margin: 50px auto;
-   width: 540px;
-   height: 495px;
+   width: 800px;
+   height: 525px;
    position: relative;
    background-color: #0d152a;
    font-family: 'Oswald', sans-serif;
@@ -19,8 +21,8 @@ p{
 }
 
 #title {
-	font-size: 60px;
-	line-height: 1.5em;
+	font-size: 80px;
+	line-height: 1.3em;
 	font-family: 'Candal', sans-serif;
 }
 
