@@ -59,8 +59,8 @@ function initialize() {
 function validateButton(e) {
 	let difficulties = document.getElementsByName('difficulty');
 	let categories = document.getElementsByName('category');
-	difficulty = [...difficulties].filter((p) => p.checked)[0].value;
-	category = [...categories].filter((p) => p.checked)[0].value;
+	difficulty = [ ...difficulties ].filter((p) => p.checked)[0].value;
+	category = [ ...categories ].filter((p) => p.checked)[0].value;
 
 	e.preventDefault();
 	setImage();
@@ -68,7 +68,7 @@ function validateButton(e) {
 
 // set size of image and populat source. Async req'd to wait for image retrieval.
 async function setImage() {
-	sourceImg = new Image(300 * 2, 230 * 2);
+	sourceImg = new Image(400 * 2, 300 * 2);
 	sourceImg.src = await assignImage(category);
 	sourceImg.addEventListener('load', setCanvas, false);
 }
@@ -78,7 +78,7 @@ async function getNasaImg() {
 	let nasaImgInfo = await nasaObj.getNasaImage();
 	return nasaImgInfo;
 }
-async function getEdamImg(){
+async function getEdamImg() {
 	let edamObj = new EdamImages();
 	let edamImgInfo = await edamObj.getEdamImages();
 	return edamImgInfo;
@@ -92,7 +92,7 @@ async function assignImage(categoryPick) {
 			// return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.nationaltrust.org.uk%2Fimages%2F1431747858549-stourhead-autumn-nov-2013-2.jpg&f=1&nofb=1';
 			temp = await getEdamImg();
 			edamImgUrl = temp[0];
-			return(edamImgUrl);
+			return edamImgUrl;
 			break;
 		case 'movies':
 			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.movieweb.com%2Fi%2Farticle%2FOsq3U5y34HTQpCBbV0DlZ3p7CSwyqj%2F1200%3A100%2FAvengers-Endgame-Posters.jpg&f=1&nofb=1';
@@ -122,8 +122,8 @@ function setCanvas() {
 	iHeight = sourceImg.height;
 
 	tileDivisor = difficulty;
-	tileDimArrayScaled = [Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor)];
-	tileDimArray0 = [Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor)];
+	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
+	tileDimArray0 = [ Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor) ];
 
 	canvas1.width = iWidth;
 	canvas1.height = iHeight;
@@ -176,7 +176,7 @@ function reTileImage(e) {
 	puzzle.style.display = 'block';
 	let difficultyAsNumber = Number(difficulty);
 	let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
-	countDown(seconds);
+	countDown(12); //??
 	canvas1.addEventListener('mousedown', getCursorPos);
 }
 
@@ -246,7 +246,7 @@ function checkProperPostion() {
 	let tileX2 = tilePosArray0[tile2Index].xCanvasPosPresent === tilePosArray0[tile2Index].xCanvasPosProper;
 	let tileY2 = tilePosArray0[tile2Index].yCanvasPosPresent === tilePosArray0[tile2Index].yCanvasPosProper;
 
-	if (tileX1 && tileY1 || tileX2 && tileY2) {
+	if ((tileX1 && tileY1) || (tileX2 && tileY2)) {
 		countScore();
 	}
 }
@@ -256,11 +256,10 @@ function countScore() {
 	let multiplier = swapCount - difficulty * 2;
 	if (multiplier <= 0) {
 		score += 5;
-	}
-	else {
+	} else {
 		score -= 10;
 	}
-	let element = document.getElementById("score");
+	let element = document.getElementById('score');
 	element.innerHTML = score;
 }
 // when two tiles are selected, switch positions, update score, and check for win
@@ -322,9 +321,14 @@ function checkWinCondition() {
 // turn off eventListener, display congrats and return to intro screen
 function displayEndScreen() {
 	canvas1.removeEventListener('mousedown', getCursorPos);
-	ctx1.font = '64px Arial';
+	ctx1.font = 'bold 75px Arial';
+	ctx1.fillStyle = 'black';
+	ctx1.fillRect(0, iHeight / 3, iWidth, iHeight / 4);
+	ctx1.save();
 	ctx1.fillStyle = 'White';
-	ctx1.fillText('Congratulations!', 80, 230);
+	ctx1.textAlign = 'center';
+	ctx1.textBaseline = 'middle';
+	ctx1.fillText('Congratulations!', iWidth / 2, iHeight / 2);
 }
 
 // displays timer to user
@@ -333,14 +337,26 @@ function countDown(seconds) {
 	if (!puzzleSolved) {
 		let element, timer;
 		element = document.getElementById('timeDisplay');
+		element.style.backgroundColor = 'black';
+		if (seconds < 10) {
+			element.style.color = 'red';
+		}else{
+
+			element.style.color = 'white';
+		}
 		element.innerHTML = `Time Left: ${seconds} seconds`;
 		if (seconds < 1) {
 			clearTimeout(timer);
-			element.innerHTML = "<h2>Time's Up!</h2>";
+			element.innerHTML = "Time's Up!";//??
 			canvas1.removeEventListener('mousedown', getCursorPos);
-			ctx1.font = '120px Arial';
+			ctx1.fillStyle = 'black';
+			ctx1.fillRect(0, iHeight / 3, iWidth, iHeight / 4);
+			ctx1.save();
+			ctx1.font = 'bold 95px Arial';
 			ctx1.fillStyle = 'Red';
-			ctx1.fillText('You Lose!', 90, 230);
+			ctx1.textAlign = 'center';
+			ctx1.textBaseline = 'middle';
+			ctx1.fillText('You Lose!', iWidth / 2, iHeight / 2);
 		}
 		seconds--;
 		timer = setTimeout(countDown, 1000, seconds);
@@ -353,6 +369,6 @@ function debugVals(e) {
 
 	pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
 	[${e.clientX},${e.clientY}]</p><p>Tile Pos Array2 Length: ${tilePosArray0.length}</p><p>Tile Dim2: x-${tileDimArrayScaled[0]} y-${tileDimArrayScaled[1]}</p><p>Tile Pos Arr ulCoord: x-${tilePosArray0[0]
-			.x0} y-${tilePosArray0[0]
-				.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
+		.x0} y-${tilePosArray0[0]
+		.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
 }
