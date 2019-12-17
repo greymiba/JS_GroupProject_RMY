@@ -39,7 +39,7 @@ let nytImgUrl;
 // variables for food category
 let edamImgUrl;
 let edamRecipeLabel;
-let edamRecipeIngredients;
+let edamRecipeCalories;
 let edamRecipeUrl;
 
 // variables for space category
@@ -63,8 +63,8 @@ function initialize() {
 function validateButton(e) {
 	let difficulties = document.getElementsByName('difficulty');
 	let categories = document.getElementsByName('category');
-	difficulty = [...difficulties].filter((p) => p.checked)[0].value;
-	category = [...categories].filter((p) => p.checked)[0].value;
+	difficulty = [ ...difficulties ].filter((p) => p.checked)[0].value;
+	category = [ ...categories ].filter((p) => p.checked)[0].value;
 
 	e.preventDefault();
 	setImage();
@@ -101,6 +101,9 @@ async function assignImage(categoryPick) {
 			// return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.nationaltrust.org.uk%2Fimages%2F1431747858549-stourhead-autumn-nov-2013-2.jpg&f=1&nofb=1';
 			temp = await getEdamImg();
 			edamImgUrl = temp[0];
+			edamRecipeLabel = temp[1];
+			edamRecipeCalories = temp[2];
+			edamRecipeUrl = temp[3];
 			return edamImgUrl;
 			break;
 		case 'movies':
@@ -134,8 +137,8 @@ function setCanvas() {
 	iHeight = sourceImg.height;
 
 	tileDivisor = difficulty;
-	tileDimArrayScaled = [Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor)];
-	tileDimArray0 = [Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor)];
+	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
+	tileDimArray0 = [ Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor) ];
 
 	canvas1.width = iWidth;
 	canvas1.height = iHeight;
@@ -269,9 +272,8 @@ function checkProperPostion() {
 // updates score based on number of moves made. only display score if greater than or equal to zero
 function countScore() {
 	let multiplier = swapCount - difficulty * 2;
-	multiplier <= 0 ? score += 5 : score -= 10;
+	multiplier <= 0 ? (score += 5) : (score -= 10);
 	scoreDisplay.innerHTML = score >= 0 ? `Score: ${score}` : 'Score: 0';
-
 }
 
 // when two tiles are selected, switch positions, update score, and check for win
@@ -342,6 +344,33 @@ function displayEndScreen() {
 	ctx1.textBaseline = 'top';
 	ctx1.font = 'bold 20px Arial';
 	ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2);
+
+	let h3 = document.createElement('h3');
+	let p2 = document.createElement('p');
+	let p3 = document.createElement('p');
+	let a1 = document.createElement('a');
+	let infoDiv = document.querySelector('#information');
+
+	switch (category) {
+		case 'food':
+			h3.innerHTML = edamRecipeLabel;
+			//p1.style.fontStyle = 'bold';
+			p2.innerHTML = 'Calories: ' + Math.floor(1*edamRecipeCalories);
+			a1.setAttribute('href', `${edamRecipeUrl}`);
+			a1.innerText = "here";
+			p3.innerHTML = `Find recipe `;//?? add link to recipe
+			p3.appendChild(a1);
+
+			infoDiv.innerHTML = '';
+			infoDiv.appendChild(h3);
+			infoDiv.appendChild(p2);
+			infoDiv.appendChild(p3);
+			break;
+		case 'movie':
+			break;
+		case 'space':
+			break;
+	}
 }
 
 // displays timer to user
@@ -353,7 +382,6 @@ function countDown(seconds) {
 		if (seconds < 10) {
 			element.style.color = 'red';
 		} else {
-
 			element.style.color = 'white';
 		}
 		element.innerHTML = `Time Left: ${seconds} seconds`;
@@ -369,9 +397,9 @@ function countDown(seconds) {
 			ctx1.textAlign = 'center';
 			ctx1.textBaseline = 'bottom';
 			ctx1.fillText('You Lose!', iWidth / 2, iHeight / 2);
-			ctx1.font = 'bold 20px Arial';  
-			ctx1.textBaseline = 'top';  
-			ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2); 
+			ctx1.font = 'bold 20px Arial';
+			ctx1.textBaseline = 'top';
+			ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2);
 		}
 		seconds--;
 		timer = setTimeout(countDown, 1000, seconds);
@@ -384,6 +412,6 @@ function debugVals(e) {
 
 	pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
 	[${e.clientX},${e.clientY}]</p><p>Tile Pos Array2 Length: ${tilePosArray0.length}</p><p>Tile Dim2: x-${tileDimArrayScaled[0]} y-${tileDimArrayScaled[1]}</p><p>Tile Pos Arr ulCoord: x-${tilePosArray0[0]
-			.x0} y-${tilePosArray0[0]
-				.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
+		.x0} y-${tilePosArray0[0]
+		.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
 }
