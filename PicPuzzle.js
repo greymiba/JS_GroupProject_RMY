@@ -63,8 +63,8 @@ function initialize() {
 function validateButton(e) {
 	let difficulties = document.getElementsByName('difficulty');
 	let categories = document.getElementsByName('category');
-	difficulty = [ ...difficulties ].filter((p) => p.checked)[0].value;
-	category = [ ...categories ].filter((p) => p.checked)[0].value;
+	difficulty = [...difficulties].filter((p) => p.checked)[0].value;
+	category = [...categories].filter((p) => p.checked)[0].value;
 
 	e.preventDefault();
 	setImage();
@@ -137,8 +137,8 @@ function setCanvas() {
 	iHeight = sourceImg.height;
 
 	tileDivisor = difficulty;
-	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
-	tileDimArray0 = [ Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor) ];
+	tileDimArrayScaled = [Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor)];
+	tileDimArray0 = [Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor)];
 
 	canvas1.width = iWidth;
 	canvas1.height = iHeight;
@@ -327,20 +327,20 @@ function checkWinCondition() {
 		}
 	}
 	puzzleSolved = true;
-	displayEndScreen();
+	displayEndScreen('Congratulations!');
 }
 
 // turn off eventListener, display congrats and return to intro screen
-function displayEndScreen() {
+function displayEndScreen(message) {
 	canvas1.removeEventListener('mousedown', getCursorPos);
-	ctx1.font = 'bold 75px Arial';
-	ctx1.fillStyle = 'black';
+	ctx1.fillStyle = 'rgba(0, 0, 0, 0.35)';
 	ctx1.fillRect(0, iHeight / 3, iWidth, iHeight / 4);
 	ctx1.save();
-	ctx1.fillStyle = 'White';
+	ctx1.font = puzzleSolved ? 'bold 75px Arial' : 'bold 95px Arial';
+	ctx1.fillStyle = puzzleSolved ? 'White' : 'Red';
 	ctx1.textAlign = 'center';
 	ctx1.textBaseline = 'bottom';
-	ctx1.fillText('Congratulations!', iWidth / 2, iHeight / 2);
+	ctx1.fillText(message, iWidth / 2, iHeight / 2);
 	ctx1.textBaseline = 'top';
 	ctx1.font = 'bold 20px Arial';
 	ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2);
@@ -355,7 +355,7 @@ function displayEndScreen() {
 		case 'food':
 			h3.innerHTML = edamRecipeLabel;
 			//p1.style.fontStyle = 'bold';
-			p2.innerHTML = 'Calories: ' + Math.floor(1*edamRecipeCalories);
+			p2.innerHTML = 'Calories: ' + Math.floor(1 * edamRecipeCalories);
 			a1.setAttribute('href', `${edamRecipeUrl}`);
 			a1.innerText = "here";
 			p3.innerHTML = `Find recipe `;//?? add link to recipe
@@ -378,31 +378,18 @@ function countDown(seconds) {
 	if (!puzzleSolved) {
 		let element, timer;
 		element = document.getElementById('timeDisplay');
-		element.style.backgroundColor = 'black';
-		if (seconds < 10) {
-			element.style.color = 'red';
-		} else {
-			element.style.color = 'white';
-		}
+		element.style.color = seconds < 10 ? 'red' : 'white';
 		element.innerHTML = `Time Left: ${seconds} seconds`;
+		
 		if (seconds < 1) {
 			clearTimeout(timer);
 			element.innerHTML = "Time's Up!";
-			canvas1.removeEventListener('mousedown', getCursorPos);
-			ctx1.fillStyle = 'black';
-			ctx1.fillRect(0, iHeight / 3, iWidth, iHeight / 4);
-			ctx1.save();
-			ctx1.font = 'bold 95px Arial';
-			ctx1.fillStyle = 'Red';
-			ctx1.textAlign = 'center';
-			ctx1.textBaseline = 'bottom';
-			ctx1.fillText('You Lose!', iWidth / 2, iHeight / 2);
-			ctx1.font = 'bold 20px Arial';
-			ctx1.textBaseline = 'top';
-			ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2);
+			displayEndScreen('You Lose!');
 		}
-		seconds--;
-		timer = setTimeout(countDown, 1000, seconds);
+		else {
+			seconds--;
+			timer = setTimeout(countDown, 1000, seconds);
+		}
 	}
 }
 
@@ -412,6 +399,6 @@ function debugVals(e) {
 
 	pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
 	[${e.clientX},${e.clientY}]</p><p>Tile Pos Array2 Length: ${tilePosArray0.length}</p><p>Tile Dim2: x-${tileDimArrayScaled[0]} y-${tileDimArrayScaled[1]}</p><p>Tile Pos Arr ulCoord: x-${tilePosArray0[0]
-		.x0} y-${tilePosArray0[0]
-		.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
+			.x0} y-${tilePosArray0[0]
+				.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
 }
