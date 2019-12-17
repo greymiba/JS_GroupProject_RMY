@@ -13,6 +13,7 @@ export default class NasaInfo {
     let nasaImg;
     let imgDate;
     let imgExplain;
+    let imgTitle;
     let keyQuery = this.keyQuery;
     //console.log('callNasa triggered!');
     
@@ -25,11 +26,12 @@ export default class NasaInfo {
         .then(function(json) {
           //console.log(json[0].hdurl);
           nasaImg = json[0].hdurl;
+          imgTitle = json[0].title;
           imgDate = json[0].date; //string: date photo was posted
           imgExplain = json[0].explanation; // string: explanation of image
           
           //console.log(`${nasaImg}`)
-          resolve([nasaImg, imgDate, imgExplain]); //nasaImg is a string of the image url
+          resolve([nasaImg, imgDate, imgExplain,imgTitle]); //nasaImg is a string of the image url
         });
     }));
 	}
