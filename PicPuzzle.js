@@ -1,6 +1,7 @@
 'use strict';
 import NasaInfo from './NasaInfo.js';
 import EdamImages from './EdamImages.js';
+import NYTImages from './NYTImages.js';
 
 let form;
 let puzzleSolved;
@@ -31,6 +32,9 @@ let tile2Index;
 let swapCount;
 let score;
 let scoreDisplay = document.getElementById('score');
+
+//variable for movie category.
+let nytImgUrl;
 
 // variables for food category
 let edamImgUrl;
@@ -83,6 +87,11 @@ async function getEdamImg() {
 	let edamImgInfo = await edamObj.getEdamImages();
 	return edamImgInfo;
 }
+async function getNytImg() {
+	let nytObj = new NYTImages();
+	let nytImgInfo = await nytObj.getNYTImages();
+	return nytImgInfo;
+}
 
 // assign an image based on the user category selection. Async req'd to wait for image retrieval.
 async function assignImage(categoryPick) {
@@ -95,7 +104,10 @@ async function assignImage(categoryPick) {
 			return edamImgUrl;
 			break;
 		case 'movies':
-			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.movieweb.com%2Fi%2Farticle%2FOsq3U5y34HTQpCBbV0DlZ3p7CSwyqj%2F1200%3A100%2FAvengers-Endgame-Posters.jpg&f=1&nofb=1';
+			// return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.movieweb.com%2Fi%2Farticle%2FOsq3U5y34HTQpCBbV0DlZ3p7CSwyqj%2F1200%3A100%2FAvengers-Endgame-Posters.jpg&f=1&nofb=1';
+			temp = await getNytImg();
+			nytImgUrl = temp[0];
+			return nytImgUrl;
 			break;
 		// case 'space':
 		// 	return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fapod.nasa.gov%2Fapod%2Fimage%2F1705%2FArp273Main_HubblePestana_1080.jpg&f=1&nofb=1';
