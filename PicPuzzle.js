@@ -2,7 +2,6 @@
 import NasaInfo from './NasaInfo.js';
 import EdamImages from './EdamImages.js';
 
-//// ???? changes to make:  show picture briefly to user
 let form;
 let puzzleSolved;
 
@@ -130,7 +129,6 @@ function setCanvas() {
 	canvas1.style.border = '1px solid red';
 	buildArray();
 	reTileImage();
-
 	//document.addEventListener('mousemove', debugVals);
 }
 
@@ -174,9 +172,13 @@ function reTileImage(e) {
 	// hide the intro screen, show the puzzle screen
 	introScreen.style.display = 'none';
 	puzzle.style.display = 'block';
+	// display timer
 	let difficultyAsNumber = Number(difficulty);
 	let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
-	countDown(seconds); //??
+	countDown(12); //??
+	// display score with initial score of 0
+	let element2 = document.getElementById('score');
+	element2.innerHTML = `Score: ${score}`; 
 	canvas1.addEventListener('mousedown', getCursorPos);
 }
 
@@ -259,8 +261,7 @@ function countScore() {
 	} else {
 		score -= 10;
 	}
-	let element = document.getElementById('score');
-	element.innerHTML = score;
+	// score is initially displayed with timer (in countDown() function) so that it's always on the screen. 
 }
 // when two tiles are selected, switch positions, update score, and check for win
 function swapTiles() {
@@ -280,8 +281,6 @@ function swapTiles() {
 			...tileDimArray0,
 			tilePosArray0[k].xCanvasPosPresent,
 			tilePosArray0[k].yCanvasPosPresent,
-			// tilePosArray0[k].xCanvasPosProper,
-			// tilePosArray0[k].yCanvasPosProper,
 			...tileDimArrayScaled
 		);
 	}
@@ -349,7 +348,6 @@ function displayEndScreen() {
 
 // displays timer to user
 function countDown(seconds) {
-	// ?? turn off if solved before time is up
 	if (!puzzleSolved) {
 		let element, timer;
 		element = document.getElementById('timeDisplay');
@@ -362,7 +360,7 @@ function countDown(seconds) {
 		element.innerHTML = `Time Left: ${seconds} seconds`;
 		if (seconds < 1) {
 			clearTimeout(timer);
-			element.innerHTML = "Time's Up!"; //??
+			element.innerHTML = "Time's Up!";
 			canvas1.removeEventListener('mousedown', getCursorPos);
 			ctx1.fillStyle = 'black';
 			ctx1.fillRect(0, iHeight / 3, iWidth, iHeight / 4);
