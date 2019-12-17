@@ -98,15 +98,16 @@ button:hover {
 
 #puzzle
 {
-  width: 532px;
-  height: 600px;
-  margin: 0px auto;
+
+  margin: 25px auto;
   display: none;
+  text-align: center;
 }
 
 #timeDisplay, #score {
   float: left;
   margin-right: 10px;
+  margin-bottom: 10px;
 	font-size: 150%;
 	padding: 4px 8px;
 	cursor: pointer;
