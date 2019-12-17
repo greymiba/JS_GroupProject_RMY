@@ -1,14 +1,15 @@
 'use strict';
 //https://api.edamam.com/search?q=chicken&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}&from=0&to=3&calories=591-722&health=alcohol-free
-let rangeEnd = 20;
-let searchTerms = [ 'action', 'drama', 'comedy','marvel','dc','blockbuster','love','war','oscars' ];
+let rangeEnd = 10;
+let searchTerms = [ 'cruise', 'pitt', 'bullock','marvel','batman','blockbuster','love','war','oscars','avengers','superheroes','fincher','spielberg','coen','samuel','wahlberg','wiig' ];
 
 export default class NYTImages {
 	constructor() {
 		let urlRoot = 'https://api.nytimes.com/svc/movies/v2/reviews/search.json?query=';
 		let keyPrefix = '&api-key=';
 		let key = '1Y8VGljIMN1HyhZLRu0xXaThmkGsoGQu';
-		let searchTerm1 = searchTerms[this.getRandomIndex(searchTerms.length)];
+    let searchTerm1 = searchTerms[this.getRandomIndex(searchTerms.length)];
+    console.log(searchTerm1);
 		this.keyQuery = urlRoot + searchTerm1 + keyPrefix + key ;
 
 		console.log(this.getRandomIndex(searchTerms.length));

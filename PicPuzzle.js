@@ -35,6 +35,10 @@ let scoreDisplay = document.getElementById('score');
 
 //variable for movie category.
 let nytImgUrl;
+let nytImgTitle;
+let nytImgDate;
+let nytImgHeadline;
+let nytImgReviewUrl;
 
 // variables for food category
 let edamImgUrl;
@@ -44,6 +48,7 @@ let edamRecipeUrl;
 
 // variables for space category
 let nasaImgUrl;
+let nasaImgTitle;
 let nasaImgExplanation;
 let nasaImgDate;
 
@@ -63,8 +68,8 @@ function initialize() {
 function validateButton(e) {
 	let difficulties = document.getElementsByName('difficulty');
 	let categories = document.getElementsByName('category');
-	difficulty = [...difficulties].filter((p) => p.checked)[0].value;
-	category = [...categories].filter((p) => p.checked)[0].value;
+	difficulty = [ ...difficulties ].filter((p) => p.checked)[0].value;
+	category = [ ...categories ].filter((p) => p.checked)[0].value;
 
 	e.preventDefault();
 	setImage();
@@ -72,7 +77,7 @@ function validateButton(e) {
 
 // set size of image and populat source. Async req'd to wait for image retrieval.
 async function setImage() {
-	sourceImg = new Image(400 * 2, 300 * 2);
+	sourceImg = new Image(350 * 2, 250 * 2);
 	sourceImg.src = await assignImage(category);
 	sourceImg.addEventListener('load', setCanvas, false);
 }
@@ -110,6 +115,10 @@ async function assignImage(categoryPick) {
 			// return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.movieweb.com%2Fi%2Farticle%2FOsq3U5y34HTQpCBbV0DlZ3p7CSwyqj%2F1200%3A100%2FAvengers-Endgame-Posters.jpg&f=1&nofb=1';
 			temp = await getNytImg();
 			nytImgUrl = temp[0];
+			nytImgTitle = temp[1];
+			nytImgDate = temp[2];
+			nytImgHeadline = temp[3];
+			nytImgReviewUrl = temp[4];
 			return nytImgUrl;
 			break;
 		// case 'space':
@@ -120,6 +129,7 @@ async function assignImage(categoryPick) {
 			nasaImgUrl = temp[0];
 			nasaImgDate = temp[1];
 			nasaImgExplanation = temp[2];
+			nasaImgTitle = temp[3];
 			console.log(nasaImgUrl);
 			return nasaImgUrl;
 			break;
@@ -137,8 +147,8 @@ function setCanvas() {
 	iHeight = sourceImg.height;
 
 	tileDivisor = difficulty;
-	tileDimArrayScaled = [Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor)];
-	tileDimArray0 = [Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor)];
+	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
+	tileDimArray0 = [ Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor) ];
 
 	canvas1.width = iWidth;
 	canvas1.height = iHeight;
@@ -344,7 +354,12 @@ function displayEndScreen(message) {
 	ctx1.textBaseline = 'top';
 	ctx1.font = 'bold 20px Arial';
 	ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2);
+	if(puzzleSolved){
+		appendInfo();
+	}
+}
 
+function appendInfo() {
 	let h3 = document.createElement('h3');
 	let p2 = document.createElement('p');
 	let p3 = document.createElement('p');
@@ -354,11 +369,11 @@ function displayEndScreen(message) {
 	switch (category) {
 		case 'food':
 			h3.innerHTML = edamRecipeLabel;
-			//p1.style.fontStyle = 'bold';
 			p2.innerHTML = 'Calories: ' + Math.floor(1 * edamRecipeCalories);
 			a1.setAttribute('href', `${edamRecipeUrl}`);
-			a1.innerText = "here";
-			p3.innerHTML = `Find recipe `;//?? add link to recipe
+			a1.setAttribute('target', '_blank');
+			a1.innerText = 'here';
+			p3.innerHTML = `Find recipe `;
 			p3.appendChild(a1);
 
 			infoDiv.innerHTML = '';
@@ -366,9 +381,34 @@ function displayEndScreen(message) {
 			infoDiv.appendChild(p2);
 			infoDiv.appendChild(p3);
 			break;
-		case 'movie':
+		case 'movies':
+			console.log([nytImgTitle,nytImgDate,nytImgHeadline,nytImgReviewUrl])
+			h3.innerHTML = nytImgTitle;
+			p2.innerHTML = "Release Date: " + nytImgDate;
+			p3.innerHTML = nytImgHeadline + '. ';
+			a1.setAttribute('href', `${nytImgReviewUrl}`);
+			a1.setAttribute('target', '_blank');
+			a1.innerText = 'Read review';
+			p3.appendChild(a1);
+
+			infoDiv.innerHTML = '';
+			infoDiv.appendChild(h3);
+			infoDiv.appendChild(p2);
+			infoDiv.appendChild(p3);
 			break;
 		case 'space':
+			h3.innerHTML = nasaImgTitle;
+			p2.innerHTML = "Date Posted: " + nasaImgDate;
+			p3.innerHTML = nasaImgExplanation;
+			a1.setAttribute('href', `${nasaImgUrl}`);
+			a1.setAttribute('target', '_blank');
+			a1.innerText = 'Hi-def image';
+			p3.appendChild(a1);
+
+			infoDiv.innerHTML = '';
+			infoDiv.appendChild(h3);
+			infoDiv.appendChild(p2);
+			infoDiv.appendChild(p3);
 			break;
 	}
 }
@@ -380,13 +420,12 @@ function countDown(seconds) {
 		element = document.getElementById('timeDisplay');
 		element.style.color = seconds < 10 ? 'red' : 'white';
 		element.innerHTML = `Time Left: ${seconds} seconds`;
-		
+
 		if (seconds < 1) {
 			clearTimeout(timer);
 			element.innerHTML = "Time's Up!";
 			displayEndScreen('You Lose!');
-		}
-		else {
+		} else {
 			seconds--;
 			timer = setTimeout(countDown, 1000, seconds);
 		}
@@ -399,6 +438,6 @@ function debugVals(e) {
 
 	pLog.innerHTML = `Screen [X,Y]: [${e.screenX},${e.screenY}]<p> Client[X,Y]:
 	[${e.clientX},${e.clientY}]</p><p>Tile Pos Array2 Length: ${tilePosArray0.length}</p><p>Tile Dim2: x-${tileDimArrayScaled[0]} y-${tileDimArrayScaled[1]}</p><p>Tile Pos Arr ulCoord: x-${tilePosArray0[0]
-			.x0} y-${tilePosArray0[0]
-				.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
+		.x0} y-${tilePosArray0[0]
+		.y0}</p><p>Canvas width: ${canvas1.width}</p><p>Canvas height: ${canvas1.height}</p><p>Image width: ${iWidth}</p><p>Image height: ${iHeight}</p><p>Image Natural width: ${sourceImg.naturalWidth}</p><p>Image Natural height: ${sourceImg.naturalHeight}</p>`;
 }
