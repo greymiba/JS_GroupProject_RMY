@@ -270,7 +270,7 @@ function checkProperPostion() {
 function countScore() {
 	let multiplier = swapCount - difficulty * 2;
 	multiplier <= 0 ? score += 5 : score -= 10;
-	scoreDisplay.innerHTML = score >= 0 ?  `Score: ${score}` : 'Score: 0';
+	scoreDisplay.innerHTML = score >= 0 ? `Score: ${score}` : 'Score: 0';
 
 }
 
@@ -337,8 +337,11 @@ function displayEndScreen() {
 	ctx1.save();
 	ctx1.fillStyle = 'White';
 	ctx1.textAlign = 'center';
-	ctx1.textBaseline = 'middle';
+	ctx1.textBaseline = 'bottom';
 	ctx1.fillText('Congratulations!', iWidth / 2, iHeight / 2);
+	ctx1.textBaseline = 'top';
+	ctx1.font = 'bold 20px Arial';
+	ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2);
 }
 
 // displays timer to user
@@ -364,8 +367,11 @@ function countDown(seconds) {
 			ctx1.font = 'bold 95px Arial';
 			ctx1.fillStyle = 'Red';
 			ctx1.textAlign = 'center';
-			ctx1.textBaseline = 'middle';
+			ctx1.textBaseline = 'bottom';
 			ctx1.fillText('You Lose!', iWidth / 2, iHeight / 2);
+			ctx1.font = 'bold 20px Arial';  
+			ctx1.textBaseline = 'top';  
+			ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2); 
 		}
 		seconds--;
 		timer = setTimeout(countDown, 1000, seconds);
