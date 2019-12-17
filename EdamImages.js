@@ -31,7 +31,7 @@ export default class EdamImages {
 				})
 				.then(function(json) {
           let edamImg = json.hits[randInd];
-          let edamArray = [edamImg.recipe.image,edamImg.recipe.label,edamImg.recipe.ingredients,edamImg.recipe.url];
+          let edamArray = [edamImg.recipe.image,edamImg.recipe.label,edamImg.recipe.calories,edamImg.recipe.url];
           console.log(edamImg);
 					
 					resolve(edamArray); 
