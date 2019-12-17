@@ -176,9 +176,7 @@ function reTileImage(e) {
 	let difficultyAsNumber = Number(difficulty);
 	let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
 	countDown(12); //??
-	// display score with initial score of 0
-	let element2 = document.getElementById('score');
-	element2.innerHTML = `Score: ${score}`; 
+
 	canvas1.addEventListener('mousedown', getCursorPos);
 }
 
@@ -332,6 +330,10 @@ function displayEndScreen() {
 
 // displays timer to user
 function countDown(seconds) {
+	// display score with initial score of 0
+	let element2 = document.getElementById('score');
+	element2.innerHTML = `Score: ${score}`; 
+	// display timer
 	if (!puzzleSolved) {
 		let element, timer;
 		element = document.getElementById('timeDisplay');
