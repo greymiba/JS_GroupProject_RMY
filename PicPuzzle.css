@@ -13,7 +13,7 @@ p{
 {
    margin: 50px auto;
    width: 800px;
-   height: 525px;
+   height: 595px;
    position: relative;
    background-color: #0d152a;
    font-family: 'Oswald', sans-serif;
@@ -21,18 +21,15 @@ p{
 }
 
 #title {
-	font-size: 80px;
+	font-size: 100px;
 	line-height: 1.3em;
 	font-family: 'Candal', sans-serif;
 }
 
 #introScreen img {
   float: left;
-  margin-left: 5px;
-	margin-right: 20px;
-  margin-top: 5px;
-  margin-bottom: 20px;
-  width: 350px;
+  margin: 5px 20px 20px 5px;
+  width: 400px;
 }
 
 #introScreen h3 {
@@ -105,4 +102,25 @@ button:hover {
   height: 600px;
   margin: 0px auto;
   display: none;
+}
+
+#timeDisplay, #score {
+  float: left;
+  margin-right: 10px;
+	font-size: 150%;
+	padding: 4px 8px;
+	cursor: pointer;
+	color: white;
+
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+
+	background: -webkit-linear-gradient(top, #a3a3a3, #000);
+	background: -moz-linear-gradient(top, #a3a3a3, #000);
+	background: linear-gradient(top, #a3a3a3, #000);
+
+	-webkit-box-shadow: 0px 5px 8px 3px rgba(255,255,255,0.3);
+	-moz-box-shadow: 0px 5px 8px 3px rgba(255,255,255,0.3);
+  box-shadow: 0px 5px 8px 3px rgba(255,255,255,0.3);
 }
