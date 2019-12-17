@@ -1,5 +1,6 @@
 'use strict';
 import NasaInfo from './NasaInfo.js';
+import EdamImages from './EdamImages.js';
 
 //// ???? changes to make:  show picture briefly to user
 let form;
@@ -30,6 +31,12 @@ let tile2Index;
 // variables for scoring
 let swapCount;
 let score;
+
+//variable for food category.
+let edamImgUrl;
+let edamRecipeLabel;
+let edamRecipeIngredients;
+let edamRecipeUrl;
 
 //Variable for space category.
 let nasaImgUrl;
@@ -71,12 +78,21 @@ async function getNasaImg() {
 	let nasaImgInfo = await nasaObj.getNasaImage();
 	return nasaImgInfo;
 }
+async function getEdamImg(){
+	let edamObj = new EdamImages();
+	let edamImgInfo = await edamObj.getEdamImages();
+	return edamImgInfo;
+}
 
 // assign an image based on the user category selection. Async req'd to wait for image retrieval.
 async function assignImage(categoryPick) {
+	let temp;
 	switch (categoryPick) {
-		case 'travel':
-			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.nationaltrust.org.uk%2Fimages%2F1431747858549-stourhead-autumn-nov-2013-2.jpg&f=1&nofb=1';
+		case 'food':
+			// return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.nationaltrust.org.uk%2Fimages%2F1431747858549-stourhead-autumn-nov-2013-2.jpg&f=1&nofb=1';
+			temp = await getEdamImg();
+			edamImgUrl = temp[0];
+			return(edamImgUrl);
 			break;
 		case 'movies':
 			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.movieweb.com%2Fi%2Farticle%2FOsq3U5y34HTQpCBbV0DlZ3p7CSwyqj%2F1200%3A100%2FAvengers-Endgame-Posters.jpg&f=1&nofb=1';
@@ -85,7 +101,7 @@ async function assignImage(categoryPick) {
 		// 	return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fapod.nasa.gov%2Fapod%2Fimage%2F1705%2FArp273Main_HubblePestana_1080.jpg&f=1&nofb=1';
 		// 	break;
 		case 'space':
-			let temp = await getNasaImg();
+			temp = await getNasaImg();
 			nasaImgUrl = temp[0];
 			nasaImgDate = temp[1];
 			nasaImgExplanation = temp[2];
