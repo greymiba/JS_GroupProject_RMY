@@ -5,8 +5,12 @@ body{
   background-image: url("blankPuzzle.jpg");
 }
 
-p{
-  right:10px;
+/* replaced p element */
+#mouseCoords{
+  display:flex;
+  flex-direction:column;
+
+  max-width: 600px;
 }
 
 #introScreen 

@@ -68,7 +68,7 @@ function validateButton(e) {
 
 // set size of image and populat source. Async req'd to wait for image retrieval.
 async function setImage() {
-	sourceImg = new Image(400 * 2, 300 * 2);
+	sourceImg = new Image(300 * 2, 200 * 2);
 	sourceImg.src = await assignImage(category);
 	sourceImg.addEventListener('load', setCanvas, false);
 }
@@ -176,7 +176,7 @@ function reTileImage(e) {
 	puzzle.style.display = 'block';
 	let difficultyAsNumber = Number(difficulty);
 	let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
-	countDown(12); //??
+	countDown(seconds); //??
 	canvas1.addEventListener('mousedown', getCursorPos);
 }
 
@@ -329,6 +329,22 @@ function displayEndScreen() {
 	ctx1.textAlign = 'center';
 	ctx1.textBaseline = 'middle';
 	ctx1.fillText('Congratulations!', iWidth / 2, iHeight / 2);
+
+	let pTag = document.querySelector('#mouseCoords');
+	let p1 = document.createElement('p');
+	let p2 = document.createElement('p');
+	switch (category) {
+		case 'space':
+			p1.textContent = `${nasaImgDate}`;
+			p2.textContent = `${nasaImgExplanation}`;
+			pTag.appendChild(p1);
+			pTag.appendChild(p2);
+			p1.style.backgroundColor = 'black'
+			p2.style.backgroundColor = 'black'
+			p1.style.color = 'white'
+			p2.style.color = 'white'
+			break;
+	}
 }
 
 // displays timer to user
@@ -340,14 +356,13 @@ function countDown(seconds) {
 		element.style.backgroundColor = 'black';
 		if (seconds < 10) {
 			element.style.color = 'red';
-		}else{
-
+		} else {
 			element.style.color = 'white';
 		}
 		element.innerHTML = `Time Left: ${seconds} seconds`;
 		if (seconds < 1) {
 			clearTimeout(timer);
-			element.innerHTML = "Time's Up!";//??
+			element.innerHTML = "Time's Up!"; //??
 			canvas1.removeEventListener('mousedown', getCursorPos);
 			ctx1.fillStyle = 'black';
 			ctx1.fillRect(0, iHeight / 3, iWidth, iHeight / 4);
