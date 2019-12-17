@@ -3,6 +3,7 @@ body{
   flex-direction:column;
   align-items:center;
   background-image: url("blankPuzzle.jpg");
+  background-size: 2000px;
 }
 
 p{
