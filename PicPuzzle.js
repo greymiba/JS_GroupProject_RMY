@@ -21,23 +21,24 @@ let tileDimArrayScaled; // array of scaled tile dimensions, [ width,  height]
 let tileDimArray0; // array of original tile dimensions, [ width,  height]
 let tilePosArray0 = [];
 
+// variables for swapping tiles
 let tileCurrentlySelected;
 let tileTint = '#7dee61';
-
 let tile1Index;
 let tile2Index;
 
 // variables for scoring
 let swapCount;
 let score;
+let scoreDisplay = document.getElementById('score');
 
-//variable for food category.
+// variables for food category
 let edamImgUrl;
 let edamRecipeLabel;
 let edamRecipeIngredients;
 let edamRecipeUrl;
 
-//Variable for space category.
+// variables for space category
 let nasaImgUrl;
 let nasaImgExplanation;
 let nasaImgDate;
@@ -60,7 +61,7 @@ function validateButton(e) {
 	let categories = document.getElementsByName('category');
 	difficulty = [ ...difficulties ].filter((p) => p.checked)[0].value;
 	category = [ ...categories ].filter((p) => p.checked)[0].value;
-
+	
 	e.preventDefault();
 	setImage();
 }
@@ -93,37 +94,37 @@ async function assignImage(categoryPick) {
 			edamImgUrl = temp[0];
 			return edamImgUrl;
 			break;
-		case 'movies':
-			return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.movieweb.com%2Fi%2Farticle%2FOsq3U5y34HTQpCBbV0DlZ3p7CSwyqj%2F1200%3A100%2FAvengers-Endgame-Posters.jpg&f=1&nofb=1';
-			break;
-		// case 'space':
-		// 	return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fapod.nasa.gov%2Fapod%2Fimage%2F1705%2FArp273Main_HubblePestana_1080.jpg&f=1&nofb=1';
-		// 	break;
-		case 'space':
-			temp = await getNasaImg();
-			nasaImgUrl = temp[0];
-			nasaImgDate = temp[1];
-			nasaImgExplanation = temp[2];
-			console.log(nasaImgUrl);
-			return nasaImgUrl;
-			break;
-	}
-}
-
-// define canvas dimensions, use image width/height to determine scale
-function setCanvas() {
+			case 'movies':
+				return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.movieweb.com%2Fi%2Farticle%2FOsq3U5y34HTQpCBbV0DlZ3p7CSwyqj%2F1200%3A100%2FAvengers-Endgame-Posters.jpg&f=1&nofb=1';
+				break;
+				// case 'space':
+				// 	return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fapod.nasa.gov%2Fapod%2Fimage%2F1705%2FArp273Main_HubblePestana_1080.jpg&f=1&nofb=1';
+				// 	break;
+				case 'space':
+					temp = await getNasaImg();
+					nasaImgUrl = temp[0];
+					nasaImgDate = temp[1];
+					nasaImgExplanation = temp[2];
+					console.log(nasaImgUrl);
+					return nasaImgUrl;
+					break;
+				}
+			}
+			
+			// define canvas dimensions, use image width/height to determine scale
+			function setCanvas() {
 	canvas1 = document.getElementById('canvas1');
 	ctx1 = canvas1.getContext('2d');
-
+	
 	oWidth = sourceImg.naturalWidth;
 	oHeight = sourceImg.naturalHeight;
 	iWidth = sourceImg.width;
 	iHeight = sourceImg.height;
-
+	
 	tileDivisor = difficulty;
 	tileDimArrayScaled = [ Math.floor(iWidth / tileDivisor), Math.floor(iHeight / tileDivisor) ];
 	tileDimArray0 = [ Math.floor(oWidth / tileDivisor), Math.floor(oHeight / tileDivisor) ];
-
+	
 	canvas1.width = iWidth;
 	canvas1.height = iHeight;
 	canvas1.style.border = '1px solid red';
@@ -135,7 +136,7 @@ function setCanvas() {
 // populate array with x/y coordinates for each image slice. each object holds original, scaled, and shuffled coordinates
 function buildArray() {
 	tilePosArray0 = [];
-
+	
 	for (let k = 0; k < difficulty; k++) {
 		//console.log(`k:${k}`); //**For Debug */
 		for (let m = 0; m < difficulty; m++) {
@@ -165,58 +166,60 @@ function reTileImage(e) {
 			tilePosArray0[tempArr[k]].xCanvasPosProper,
 			tilePosArray0[tempArr[k]].yCanvasPosProper,
 			...tileDimArrayScaled
-		);
-		tilePosArray0[k].xCanvasPosPresent = tilePosArray0[tempArr[k]].xCanvasPosProper;
-		tilePosArray0[k].yCanvasPosPresent = tilePosArray0[tempArr[k]].yCanvasPosProper;
+			);
+			tilePosArray0[k].xCanvasPosPresent = tilePosArray0[tempArr[k]].xCanvasPosProper;
+			tilePosArray0[k].yCanvasPosPresent = tilePosArray0[tempArr[k]].yCanvasPosProper;
+		}
+		// hide the intro screen, show the puzzle screen
+		introScreen.style.display = 'none';
+		puzzle.style.display = 'block';
+		// display timer
+		let difficultyAsNumber = Number(difficulty);
+		let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
+		countDown(12); //??
+		// display score
+		scoreDisplay.innerHTML = `Score: ${score}`; 
+		
+		canvas1.addEventListener('mousedown', getCursorPos);
 	}
-	// hide the intro screen, show the puzzle screen
-	introScreen.style.display = 'none';
-	puzzle.style.display = 'block';
-	// display timer
-	let difficultyAsNumber = Number(difficulty);
-	let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
-	countDown(12); //??
-
-	canvas1.addEventListener('mousedown', getCursorPos);
-}
-
-// returns array of shuffled indexes for the size of the puzzle
-function shuffle(number) {
-	let array = [];
-	for (let i = 0; i < number; i++) {
-		array.push(i);
-	}
-	let currentIndex = array.length,
+	
+	// returns array of shuffled indexes for the size of the puzzle
+	function shuffle(number) {
+		let array = [];
+		for (let i = 0; i < number; i++) {
+			array.push(i);
+		}
+		let currentIndex = array.length,
 		temporaryValue,
 		randomIndex;
-
-	while (0 !== currentIndex) {
-		randomIndex = Math.floor(Math.random() * currentIndex);
-		currentIndex -= 1;
-		temporaryValue = array[currentIndex];
-		array[currentIndex] = array[randomIndex];
-		array[randomIndex] = temporaryValue;
+		
+		while (0 !== currentIndex) {
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -= 1;
+			temporaryValue = array[currentIndex];
+			array[currentIndex] = array[randomIndex];
+			array[randomIndex] = temporaryValue;
+		}
+		return array.slice(); // return a new array containing values in random order.
 	}
-	return array.slice(); // return a new array containing values in random order.
-}
-
-// determines x/y coordinates of mouse in the canvas, based on location when clicked
-function getCursorPos(eventA) {
-	const rectangle = canvas1.getBoundingClientRect();
-	const x = Math.floor(eventA.clientX - rectangle.left);
-	const y = Math.floor(eventA.clientY - rectangle.top);
-	// console.log(`Canvas X: ${x}  Canvas Y: ${y}`);
-
-	selectTile(x, y);
-}
-
+	
+	// determines x/y coordinates of mouse in the canvas, based on location when clicked
+	function getCursorPos(eventA) {
+		const rectangle = canvas1.getBoundingClientRect();
+		const x = Math.floor(eventA.clientX - rectangle.left);
+		const y = Math.floor(eventA.clientY - rectangle.top);
+		// console.log(`Canvas X: ${x}  Canvas Y: ${y}`);
+		
+		selectTile(x, y);
+	}
+	
 // determines what tile has been selected on the puzzle using coordinates
 function selectTile(mouseX, mouseY) {
 	if (mouseX >= 0 && mouseX <= iWidth && mouseY >= 0 && mouseY <= iHeight) {
 		let tile;
 		let offsetX = tileDimArrayScaled[0];
 		let offsetY = tileDimArrayScaled[1];
-
+		
 		for (let index = 0; index < tilePosArray0.length; index++) {
 			tile = tilePosArray0[index];
 			if (
@@ -224,11 +227,11 @@ function selectTile(mouseX, mouseY) {
 				mouseX < tile.xCanvasPosPresent + offsetX &&
 				mouseY >= tile.yCanvasPosPresent &&
 				mouseY < tile.yCanvasPosPresent + offsetY
-			) {
-				if (!tileCurrentlySelected) {
-					tile1Index = index;
-					markSelectedTile(index);
-				} else {
+				) {
+					if (!tileCurrentlySelected) {
+						tile1Index = index;
+						markSelectedTile(index);
+					} else {
 					tile2Index = index;
 					markSelectedTile(index); //Arbitrarily highlight tilePosArray0[2]
 					setTimeout(swapTiles, 500);
@@ -245,7 +248,7 @@ function checkProperPostion() {
 	let tileY1 = tilePosArray0[tile1Index].yCanvasPosPresent === tilePosArray0[tile1Index].yCanvasPosProper;
 	let tileX2 = tilePosArray0[tile2Index].xCanvasPosPresent === tilePosArray0[tile2Index].xCanvasPosProper;
 	let tileY2 = tilePosArray0[tile2Index].yCanvasPosPresent === tilePosArray0[tile2Index].yCanvasPosProper;
-
+	
 	if ((tileX1 && tileY1) || (tileX2 && tileY2)) {
 		countScore();
 	}
@@ -259,7 +262,7 @@ function countScore() {
 	} else {
 		score -= 10;
 	}
-	// score is initially displayed with timer (in countDown() function) so that it's always on the screen. 
+	scoreDisplay.innerHTML = `Score: ${score}`; 
 }
 // when two tiles are selected, switch positions, update score, and check for win
 function swapTiles() {
@@ -330,10 +333,6 @@ function displayEndScreen() {
 
 // displays timer to user
 function countDown(seconds) {
-	// display score with initial score of 0
-	let element2 = document.getElementById('score');
-	element2.innerHTML = `Score: ${score}`; 
-	// display timer
 	if (!puzzleSolved) {
 		let element, timer;
 		element = document.getElementById('timeDisplay');
