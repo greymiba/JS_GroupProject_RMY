@@ -75,11 +75,13 @@ function validateButton(e) {
 	setImage();
 }
 
-// set size of image and populate source. Async required to wait for image retrieval
+// set size of image and populat source. Async required to wait for image retrieval
 async function setImage() {
-	sourceImg = new Image(350 * 2, 250 * 2);
+	sourceImg = new Image(420 * 2, 300 * 2);
+
 	introScreen.style.display = 'none';
 	puzzle.style.display = 'block';
+
 	sourceImg.src = await assignImage(category);
 	sourceImg.addEventListener('load', setCanvas, false);
 }
@@ -352,7 +354,7 @@ function checkProperPostion() {
 // updates score based on number of moves made. only display score if greater than or equal to zero
 function countScore() {
 	let multiplier = swapCount - difficulty * 2;
-	multiplier <= 0 ? (score += 5) : (score -= 5);
+	multiplier <= 0 ? (score += 5) : (score -= 10);
 	scoreDisplay.innerHTML = score >= 0 ? `Score: ${score}` : 'Score: 0';
 }
 
