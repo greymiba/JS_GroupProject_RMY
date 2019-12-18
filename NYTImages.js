@@ -1,7 +1,7 @@
 'use strict';
 //https://api.edamam.com/search?q=chicken&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}&from=0&to=3&calories=591-722&health=alcohol-free
 let rangeEnd = 10;
-let searchTerms = [ 'cruise', 'pitt', 'bullock','marvel','batman','blockbuster','love','war','oscars','avengers','superheroes','fincher','spielberg','coen','samuel','wahlberg','wiig' ];
+let searchTerms = [ 'cruise', 'pitt', 'bullock','love','war','nicholson','avengers','fincher','spielberg','samuel','wahlberg','wiig','coppola','scorsese','paulson','bacon','hart','rock','amy' ];
 
 export default class NYTImages {
 	constructor() {

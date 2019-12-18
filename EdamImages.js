@@ -2,7 +2,7 @@
 //https://api.edamam.com/search?q=chicken&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}&from=0&to=3&calories=591-722&health=alcohol-free
 let rangeStart = 0;
 let rangeEnd = 100;
-let mainIngredient = [ 'chicken', 'beef', 'shrimp', 'lamb', 'broccoli','tofu','lobster' ];
+let mainIngredient = [ 'chicken', 'beef', 'shrimp', 'lamb', 'broccoli','tofu','lobster','ham','turkey','potatoes','rice' ];
 export default class EdamImages {
 	constructor() {
 		let urlRoot = ' https://api.edamam.com/search';

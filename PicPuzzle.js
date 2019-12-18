@@ -8,6 +8,10 @@ let puzzleSolved;
 
 let difficulty, category; //difficulty & category variables hold the user-selected puzzle difficulty and picture category.
 
+let canvasPreload;
+let ctxPre;
+let loadingVid;
+
 let canvas1;
 let ctx1;
 let sourceImg;
@@ -75,9 +79,19 @@ function validateButton(e) {
 	setImage();
 }
 
+function removeLoadingVid(){
+	
+	document.querySelector('#puzzle').removeChild(document.querySelector('iframe'));
+}
+
+
 // set size of image and populat source. Async req'd to wait for image retrieval.
 async function setImage() {
-	sourceImg = new Image(350 * 2, 250 * 2);
+	sourceImg = new Image(400 * 2, 250 * 2);
+
+	introScreen.style.display = 'none';
+	puzzle.style.display = 'block';
+
 	sourceImg.src = await assignImage(category);
 	sourceImg.addEventListener('load', setCanvas, false);
 }
@@ -138,6 +152,8 @@ async function assignImage(categoryPick) {
 
 // define canvas dimensions, use image width/height to determine scale
 function setCanvas() {
+	removeLoadingVid();
+
 	canvas1 = document.getElementById('canvas1');
 	ctx1 = canvas1.getContext('2d');
 
@@ -384,7 +400,7 @@ function appendInfo() {
 		case 'movies':
 			console.log([nytImgTitle,nytImgDate,nytImgHeadline,nytImgReviewUrl])
 			h3.innerHTML = nytImgTitle;
-			p2.innerHTML = "Release Date: " + nytImgDate;
+			p2.innerHTML = nytImgDate? "Release Date: " + nytImgDate: "Release Date: " +'N/A';
 			p3.innerHTML = nytImgHeadline + '. ';
 			a1.setAttribute('href', `${nytImgReviewUrl}`);
 			a1.setAttribute('target', '_blank');
@@ -399,7 +415,7 @@ function appendInfo() {
 		case 'space':
 			h3.innerHTML = nasaImgTitle;
 			p2.innerHTML = "Date Posted: " + nasaImgDate;
-			p3.innerHTML = nasaImgExplanation;
+			p3.innerHTML = nasaImgExplanation + ' ';
 			a1.setAttribute('href', `${nasaImgUrl}`);
 			a1.setAttribute('target', '_blank');
 			a1.innerText = 'Hi-def image';
