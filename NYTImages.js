@@ -1,7 +1,7 @@
 'use strict';
 //https://api.edamam.com/search?q=chicken&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}&from=0&to=3&calories=591-722&health=alcohol-free
 let rangeEnd = 10;
-let searchTerms = [ 'cruise', 'pitt', 'bullock','marvel','batman','blockbuster','love','war','oscars','avengers','superheroes','fincher','spielberg','coen','samuel','wahlberg','wiig' ];
+let searchTerms = [ 'cruise', 'pitt', 'bullock','love','war','avengers','fincher','spielberg','samuel','wahlberg','wiig', 'scorsese','carey','keanu','dog','cat','bird'];
 
 export default class NYTImages {
 	constructor() {
@@ -37,7 +37,8 @@ export default class NYTImages {
 						}
 					}
 					console.log(randInd);
-					let nytMulti = nytInfo[randInd].multimedia;
+          let nytMulti = nytInfo[randInd].multimedia;
+          let openDate = nytInfo[randInd].opening_date? nytInfo[randInd].opening_date: 'N/A';
 					let nytArray = [nytMulti.src,nytInfo[randInd].display_title,nytInfo[randInd].opening_date,nytInfo[randInd].headline, nytInfo[randInd].link.url];
 					
 					resolve(nytArray); 
