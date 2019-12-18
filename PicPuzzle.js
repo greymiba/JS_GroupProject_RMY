@@ -78,6 +78,8 @@ function validateButton(e) {
 // set size of image and populat source. Async required to wait for image retrieval
 async function setImage() {
 	sourceImg = new Image(350 * 2, 250 * 2);
+	introScreen.style.display = 'none';
+	puzzle.style.display = 'block';
 	sourceImg.src = await assignImage(category);
 	sourceImg.addEventListener('load', setCanvas, false);
 }
@@ -140,9 +142,14 @@ async function assignImage(categoryPick) {
 			break;
 	}
 }
+function removeLoadingVid(){
+	
+	document.querySelector('#puzzle').removeChild(document.querySelector('iframe'));
+}
 
 // define canvas dimensions, use image width/height to determine scale
 function setCanvas() {
+	removeLoadingVid();
 	canvas1 = document.getElementById('canvas1');
 	ctx1 = canvas1.getContext('2d');
 
@@ -201,8 +208,8 @@ function reTileImage(e) {
 		tilePosArray0[k].yCanvasPosPresent = tilePosArray0[tempArr[k]].yCanvasPosProper;
 	}
 	// hide the intro screen, show the puzzle screen
-	introScreen.style.display = 'none';
-	puzzle.style.display = 'block';
+	// introScreen.style.display = 'none';
+	// puzzle.style.display = 'block';
 	// display timer
 	let difficultyAsNumber = Number(difficulty);
 	let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
