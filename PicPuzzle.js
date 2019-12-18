@@ -44,6 +44,7 @@ let nytImgReviewUrl;
 let edamImgUrl;
 let edamRecipeLabel;
 let edamRecipeCalories;
+let edamRecipeIngredients;
 let edamRecipeUrl;
 
 // variables for space category
@@ -80,7 +81,7 @@ async function setImage() {
 	sourceImg = new Image(420 * 2, 300 * 2);
 
 	introScreen.style.display = 'none';
-	puzzle.style.display = 'block';
+	puzzle.style.display = 'flex';
 
 	sourceImg.src = await assignImage(category);
 	sourceImg.addEventListener('load', setCanvas, false);
@@ -117,7 +118,8 @@ async function assignImage(categoryPick) {
 			edamImgUrl = temp[0];
 			edamRecipeLabel = temp[1];
 			edamRecipeCalories = temp[2];
-			edamRecipeUrl = temp[3];
+			edamRecipeIngredients = temp[3];
+			edamRecipeUrl = temp[4];
 			return edamImgUrl;
 			break;
 		case 'movies':
@@ -144,13 +146,24 @@ async function assignImage(categoryPick) {
 			break;
 	}
 }
+
 function removeLoadingVid(){
 	
-	document.querySelector('#puzzle').removeChild(document.querySelector('iframe'));
+	document.querySelector('#puzzle').removeChild(document.querySelector('#loading'));
+}
+
+function showHurryGif(){
+	document.querySelector('#hurry').style.display = 'block';
+}
+
+function showLoseGif(){
+	document.querySelector('#hurry').remove();
+	document.querySelector('#lose').style.display = 'block';
 }
 
 // define canvas dimensions, use image width/height to determine scale
 function setCanvas() {
+	showHurryGif();
 	removeLoadingVid();
 	canvas1 = document.getElementById('canvas1');
 	ctx1 = canvas1.getContext('2d');
@@ -253,6 +266,8 @@ function countDown(seconds) {
 		if (seconds < 1) {
 			clearTimeout(timer);
 			element.innerHTML = "Time's Up!";
+			//document.querySelector('#hurry').setAttribute('src','https://giphy.com/embed/l2JhrYYxAD6N5gble');
+			showLoseGif();
 			displayEndScreen('You Lose!');
 		} else {
 			seconds--;
@@ -388,7 +403,10 @@ function displayEndScreen(message) {
 	ctx1.font = 'bold 20px Arial';
 	ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2);
 	if(puzzleSolved){
+		document.querySelector('#information').style.backgroundColor = 'white';
 		appendInfo();
+	}else{
+		document.querySelector('#hurry').setAttribute('src','https://media.giphy.com/media/FgjKGypLCAety/giphy.gif')
 	}
 }
 
@@ -402,6 +420,8 @@ function appendInfo() {
 
 	switch (category) {
 		case 'food':
+			let p4 = document.createElement('p');
+
 			h3.innerHTML = edamRecipeLabel;
 			p2.innerHTML = 'Calories: ' + Math.floor(1 * edamRecipeCalories);
 			a1.setAttribute('href', `${edamRecipeUrl}`);
@@ -409,10 +429,12 @@ function appendInfo() {
 			a1.innerText = 'here';
 			p3.innerHTML = `Find recipe `;
 			p3.appendChild(a1);
+			p4.innerHTML = edamRecipeIngredients;
 
 			infoDiv.innerHTML = '';
 			infoDiv.appendChild(h3);
 			infoDiv.appendChild(p2);
+			infoDiv.appendChild(p4);
 			infoDiv.appendChild(p3);
 			break;
 		case 'movies':
