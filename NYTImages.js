@@ -39,7 +39,7 @@ export default class NYTImages {
 					console.log(randInd);
           let nytMulti = nytInfo[randInd].multimedia;
           let openDate = nytInfo[randInd].opening_date? nytInfo[randInd].opening_date: 'N/A';
-					let nytArray = [nytMulti.src,nytInfo[randInd].display_title,nytInfo[randInd].opening_date,nytInfo[randInd].headline, nytInfo[randInd].link.url];
+					let nytArray = [nytMulti.src,nytInfo[randInd].display_title,openDate,nytInfo[randInd].headline, nytInfo[randInd].link.url];
 					
 					resolve(nytArray); 
 				});

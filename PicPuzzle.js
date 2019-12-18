@@ -433,10 +433,10 @@ function appendInfo() {
 		case 'space':
 			h3.innerHTML = nasaImgTitle;
 			p2.innerHTML = "Date Posted: " + nasaImgDate;
-			p3.innerHTML = nasaImgExplanation;
+			p3.innerHTML = nasaImgExplanation + ' ';
 			a1.setAttribute('href', `${nasaImgUrl}`);
 			a1.setAttribute('target', '_blank');
-			a1.innerText = 'Hi-def image';
+			a1.innerText = 'Better image';
 			p3.appendChild(a1);
 
 			infoDiv.innerHTML = '';
