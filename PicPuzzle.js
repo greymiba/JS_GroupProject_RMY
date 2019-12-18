@@ -96,23 +96,28 @@ async function setImage() {
 	sourceImg.addEventListener('load', setCanvas, false);
 }
 
+// connect to API to get NASA image
 async function getNasaImg() {
 	let nasaObj = new NasaInfo();
 	let nasaImgInfo = await nasaObj.getNasaImage();
 	return nasaImgInfo;
 }
+
+// connect to API to get Food image
 async function getEdamImg() {
 	let edamObj = new EdamImages();
 	let edamImgInfo = await edamObj.getEdamImages();
 	return edamImgInfo;
 }
+
+// connect to API to get Movie image
 async function getNytImg() {
 	let nytObj = new NYTImages();
 	let nytImgInfo = await nytObj.getNYTImages();
 	return nytImgInfo;
 }
 
-// assign an image based on the user category selection. Async req'd to wait for image retrieval.
+// assign an image based on the user category selection. Async required to wait for image retrieval
 async function assignImage(categoryPick) {
 	let temp;
 	switch (categoryPick) {
@@ -217,7 +222,7 @@ function reTileImage(e) {
 	// display timer
 	let difficultyAsNumber = Number(difficulty);
 	let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
-	countDown(seconds); //??
+	countDown(seconds); 
 	// display score
 	scoreDisplay.innerHTML = `Score: ${score}`;
 
@@ -242,6 +247,25 @@ function shuffle(number) {
 		array[randomIndex] = temporaryValue;
 	}
 	return array.slice(); // return a new array containing values in random order.
+}
+
+// displays timer to user
+function countDown(seconds) {
+	if (!puzzleSolved) {
+		let element, timer;
+		element = document.getElementById('timeDisplay');
+		element.style.color = seconds < 10 ? 'red' : 'white';
+		element.innerHTML = `Time Left: ${seconds} seconds`;
+
+		if (seconds < 1) {
+			clearTimeout(timer);
+			element.innerHTML = "Time's Up!";
+			displayEndScreen('You Lose!');
+		} else {
+			seconds--;
+			timer = setTimeout(countDown, 1000, seconds);
+		}
+	}
 }
 
 // determines x/y coordinates of mouse in the canvas, based on location when clicked
@@ -283,23 +307,18 @@ function selectTile(mouseX, mouseY) {
 	}
 }
 
-// check if swapped tile went to proper position
-function checkProperPostion() {
-	let tileX1 = tilePosArray0[tile1Index].xCanvasPosPresent === tilePosArray0[tile1Index].xCanvasPosProper;
-	let tileY1 = tilePosArray0[tile1Index].yCanvasPosPresent === tilePosArray0[tile1Index].yCanvasPosProper;
-	let tileX2 = tilePosArray0[tile2Index].xCanvasPosPresent === tilePosArray0[tile2Index].xCanvasPosProper;
-	let tileY2 = tilePosArray0[tile2Index].yCanvasPosPresent === tilePosArray0[tile2Index].yCanvasPosProper;
-
-	if ((tileX1 && tileY1) || (tileX2 && tileY2)) {
-		countScore();
-	}
-}
-
-// updates score based on number of moves made. only display score if greater than or equal to zero
-function countScore() {
-	let multiplier = swapCount - difficulty * 2;
-	multiplier <= 0 ? (score += 5) : (score -= 10);
-	scoreDisplay.innerHTML = score >= 0 ? `Score: ${score}` : 'Score: 0';
+// highlight tiles selected for swap
+function markSelectedTile(index) {
+	ctx1.save();
+	ctx1.globalAlpha = 0.4;
+	ctx1.fillStyle = tileTint;
+	ctx1.fillRect(
+		tilePosArray0[index].xCanvasPosPresent,
+		tilePosArray0[index].yCanvasPosPresent,
+		...tileDimArrayScaled
+	);
+	ctx1.restore();
+	tileCurrentlySelected = !tileCurrentlySelected;
 }
 
 // when two tiles are selected, switch positions, update score, and check for win
@@ -327,18 +346,23 @@ function swapTiles() {
 	checkWinCondition();
 }
 
-// highlight tiles selected for swap
-function markSelectedTile(index) {
-	ctx1.save();
-	ctx1.globalAlpha = 0.4;
-	ctx1.fillStyle = tileTint;
-	ctx1.fillRect(
-		tilePosArray0[index].xCanvasPosPresent,
-		tilePosArray0[index].yCanvasPosPresent,
-		...tileDimArrayScaled
-	);
-	ctx1.restore();
-	tileCurrentlySelected = !tileCurrentlySelected;
+// check if swapped tile went to proper position
+function checkProperPostion() {
+	let tileX1 = tilePosArray0[tile1Index].xCanvasPosPresent === tilePosArray0[tile1Index].xCanvasPosProper;
+	let tileY1 = tilePosArray0[tile1Index].yCanvasPosPresent === tilePosArray0[tile1Index].yCanvasPosProper;
+	let tileX2 = tilePosArray0[tile2Index].xCanvasPosPresent === tilePosArray0[tile2Index].xCanvasPosProper;
+	let tileY2 = tilePosArray0[tile2Index].yCanvasPosPresent === tilePosArray0[tile2Index].yCanvasPosProper;
+
+	if ((tileX1 && tileY1) || (tileX2 && tileY2)) {
+		countScore();
+	}
+}
+
+// updates score based on number of moves made. only display score if greater than or equal to zero
+function countScore() {
+	let multiplier = swapCount - difficulty * 2;
+	multiplier <= 0 ? (score += 5) : (score -= 10);
+	scoreDisplay.innerHTML = score >= 0 ? `Score: ${score}` : 'Score: 0';
 }
 
 // loops over tilePosArray0 to compare x / y values for proper and present position in current object
@@ -375,6 +399,7 @@ function displayEndScreen(message) {
 	}
 }
 
+// if puzzle solved, display information about picture
 function appendInfo() {
 	let h3 = document.createElement('h3');
 	let p2 = document.createElement('p');
@@ -429,25 +454,7 @@ function appendInfo() {
 	}
 }
 
-// displays timer to user
-function countDown(seconds) {
-	if (!puzzleSolved) {
-		let element, timer;
-		element = document.getElementById('timeDisplay');
-		element.style.color = seconds < 10 ? 'red' : 'white';
-		element.innerHTML = `Time Left: ${seconds} seconds`;
-
-		if (seconds < 1) {
-			clearTimeout(timer);
-			element.innerHTML = "Time's Up!";
-			displayEndScreen('You Lose!');
-		} else {
-			seconds--;
-			timer = setTimeout(countDown, 1000, seconds);
-		}
-	}
-}
-
+// for debugging - prints cursor x/y values, image size and position
 function debugVals(e) {
 	let pLog = document.getElementById('mouseCoords');
 	pLog.style.fontSize = '10px';
