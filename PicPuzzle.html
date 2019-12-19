@@ -8,7 +8,7 @@
 </head>
 
 
-  <body>
+<body>
 
   <!-- intro screen with instructions and selections -->
   <section id="introScreen">
@@ -52,17 +52,27 @@
 
   <section id="puzzle">
     <div id="information">
-      <iframe id = 'lose' src="https://giphy.com/embed/FgjKGypLCAety" width="100%" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
-      <iframe id = 'hurry' src="https://giphy.com/embed/CpgNjk2E54p7W" width="100%" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+      <iframe id='lose' src="https://giphy.com/embed/FgjKGypLCAety" width="100%" height="480" frameBorder="0"
+        class="giphy-embed" allowFullScreen></iframe>
+      <iframe id='hurry' src="https://giphy.com/embed/CpgNjk2E54p7W" width="100%" height="480" frameBorder="0"
+        class="giphy-embed" allowFullScreen></iframe>
     </div>
+
     <div>
       <div id="timeDisplay"></div>
       <div id="score"></div>
-
     </div>
+
     <div id="puzzleDisplay"><canvas id="canvas1"></canvas></div>
-    <iframe id="loading" src="https://giphy.com/embed/3NwOyKt1n7S6KccVQg" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
-  
+
+    <iframe id="loading" src="https://giphy.com/embed/3NwOyKt1n7S6KccVQg" width="480" height="480" frameBorder="0"
+      class="giphy-embed" allowFullScreen></iframe>
+
+    <!-- Audio Files -->
+    <audio id="puzzleSound" src="/Tetris.mp3" type="audio/mpeg" loop></audio>
+    <audio id="winSound" src="/cheering.mp3" type="audio/mpeg" loop></audio>
+    <audio id="loseSound" src="/lose.mp3" type="audio/mpeg" loop></audio>
+
     <div id="mouseDiv" style="display: none; top:0px; right:10px; position:absolute;">
       <p id="mouseCoords">Mouse Coords: </p>
     </div>

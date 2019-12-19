@@ -53,6 +53,11 @@ let nasaImgTitle;
 let nasaImgExplanation;
 let nasaImgDate;
 
+// variables for audio control
+let puzzleSound = document.querySelector('#puzzleSound');
+let winSound = document.querySelector('#winSound');
+let loseSound = document.querySelector('#loseSound');
+
 let body = document.querySelector('body');
 body.onload = initialize;
 
@@ -165,6 +170,7 @@ function showLoseGif(){
 function setCanvas() {
 	showHurryGif();
 	removeLoadingVid();
+	puzzleSound.play();
 	canvas1 = document.getElementById('canvas1');
 	ctx1 = canvas1.getContext('2d');
 
@@ -222,9 +228,6 @@ function reTileImage(e) {
 		tilePosArray0[k].xCanvasPosPresent = tilePosArray0[tempArr[k]].xCanvasPosProper;
 		tilePosArray0[k].yCanvasPosPresent = tilePosArray0[tempArr[k]].yCanvasPosProper;
 	}
-	// hide the intro screen, show the puzzle screen
-	// introScreen.style.display = 'none';
-	// puzzle.style.display = 'block';
 	// display timer
 	let difficultyAsNumber = Number(difficulty);
 	let seconds = difficultyAsNumber === 5 ? 135 : difficultyAsNumber === 4 ? 90 : 45;
@@ -260,13 +263,12 @@ function countDown(seconds) {
 	if (!puzzleSolved) {
 		let element, timer;
 		element = document.getElementById('timeDisplay');
-		element.style.color = seconds < 10 ? 'red' : 'white';
+		element.style.color = seconds < 10 ? 'Red' : 'White';
 		element.innerHTML = `Time Left: ${seconds} seconds`;
 
 		if (seconds < 1) {
 			clearTimeout(timer);
 			element.innerHTML = "Time's Up!";
-			//document.querySelector('#hurry').setAttribute('src','https://giphy.com/embed/l2JhrYYxAD6N5gble');
 			showLoseGif();
 			displayEndScreen('You Lose!');
 		} else {
@@ -391,23 +393,28 @@ function checkWinCondition() {
 // turn off eventListener, display congrats and return to intro screen
 function displayEndScreen(message) {
 	canvas1.removeEventListener('mousedown', getCursorPos);
+	puzzleSound.pause();
 	ctx1.fillStyle = 'rgba(0, 0, 0, 0.35)';
 	ctx1.fillRect(0, iHeight / 3, iWidth, iHeight / 4);
 	ctx1.save();
-	ctx1.font = puzzleSolved ? 'bold 75px Arial' : 'bold 95px Arial';
-	ctx1.fillStyle = puzzleSolved ? 'White' : 'Red';
+	if(puzzleSolved){
+		winSound.play();
+		ctx1.font = 'bold 75px Arial';
+		ctx1.fillStyle = 'White';
+		document.querySelector('#information').style.backgroundColor = 'White';
+		appendInfo();
+	}
+	else {
+		loseSound.play();
+		ctx1.font = 'bold 95px Arial';
+		ctx1.fillStyle = 'Red';
+	}
 	ctx1.textAlign = 'center';
 	ctx1.textBaseline = 'bottom';
 	ctx1.fillText(message, iWidth / 2, iHeight / 2);
 	ctx1.textBaseline = 'top';
 	ctx1.font = 'bold 20px Arial';
 	ctx1.fillText('Refresh to play again', iWidth / 2, iHeight / 2);
-	if(puzzleSolved){
-		document.querySelector('#information').style.backgroundColor = 'white';
-		appendInfo();
-	}else{
-		document.querySelector('#hurry').setAttribute('src','https://media.giphy.com/media/FgjKGypLCAety/giphy.gif')
-	}
 }
 
 // if puzzle solved, display information about picture
